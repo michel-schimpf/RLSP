@@ -7,6 +7,7 @@ import gym
 import metaworld
 from gym.spaces import Box
 from GripperControl import reach, pick, place
+from metaworld.envs import reward_utils
 
 
 # Todo: add types
@@ -100,25 +101,53 @@ class SubGoalEnv(gym.Env):
         reward = -1
         done = False
         if self.env_name == "reach-v2":
-            reward = -1
             if 'success' in info and info['success']:
                 reward = 10
                 done = True
         elif self.env_name == "pick-place-v2":
-            reward = -1
+            # # give reward for distance to object
+            # _TARGET_RADIUS = 0.05
+            # obj_pos = pretty_obs(obs)['first_obj'][:3]
+            # gripper_pos = self.env.tcp_center
+            # gripper_to_obj = np.linalg.norm(obj_pos - gripper_pos)
+            # in_place_margin = (np.linalg.norm(self.env.hand_init_pos - obj_pos))
+            # gripper_to_obj_reward = reward_utils.tolerance(gripper_to_obj,
+            #                                   bounds=(0, _TARGET_RADIUS),
+            #                                   margin=in_place_margin,
+            #                                   sigmoid='long_tail', )
+            #
+            # # give reward for grasping the object
+            # grasp_reward = info['grasp_reward']
+            # # if already grasped and grasped again, give negativ reward
+            # if self.already_grasped and actiontype == 1:
+            #     return -1, False
+            #
+            # # if grasped give reward for how near the object is to goal position
+            # obj_to_goal_reward = info['in_place_reward']
+            #
+            # # return total reward
+            # if info['success']:
+            #     return 100,True
+            # else:
+            #     return (gripper_to_obj_reward+grasp_reward+obj_to_goal_reward), False
+
+
+
             if "near_object" in info and info["near_object"]:
                 reward = 0
                 if 'grasp_reward' in info:
                     reward += info['grasp_reward']
                     if info['grasp_reward'] > 0.42 and 'in_place_reward' in info:
-                        reward += 5 * info['in_place_reward']
-                        if actiontype == 1 and self.already_grasped:
+                        reward += 10 * info['in_place_reward']
+                        if self.already_grasped and actiontype == 1:
                             reward = -1
+                        elif self.already_grasped and actiontype == 0:
+                            reward += 1
                         self.already_grasped = True
                     else:
                         self.already_grasped = False
         if 'success' in info and info['success']:
-            reward = 200
+            reward = 300
             done = True
         return reward, done
 

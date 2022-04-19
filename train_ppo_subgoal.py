@@ -19,8 +19,8 @@ def train():
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,])
     env_vec = VecMonitor(env_vec, "logs/PPO_0")
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir)
-    model = ALGO.load("models/PPO/6938624", env=env_vec)
-    iters = 847
+    model = ALGO.load("models/PPO/2555904", env=env_vec)
+    iters = 322
     while True:
         print(iters)
         iters += 1
