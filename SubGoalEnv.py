@@ -129,7 +129,7 @@ class SubGoalEnv(gym.Env):
                 self.already_grasped = False
 
             # if grasped give reward for how near the object is to goal position
-            if info['grasp_reward'] > 0.42 and 'in_place_reward' in info:
+            if grasp_reward > 0.42 and 'in_place_reward' in info:
                 obj_to_goal_reward = 4*info['in_place_reward']
             else:
                 obj_to_goal_reward = 0
