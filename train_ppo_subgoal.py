@@ -23,9 +23,11 @@ def train():
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
                              ])
     env_vec = VecMonitor(env_vec, "logs/PPO_0")
-    model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir)
+    model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS)
     # model = ALGO.load("models/PPO/2555904", env=env_vec)
     iters = 0
     while True:
@@ -33,7 +35,7 @@ def train():
         iters += 1
         model.learn(total_timesteps=TIMESTEPS, reset_num_timesteps=False,
                     tb_log_name=algo,)
-        model.save(f"{models_dir}/{TIMESTEPS * iters*2}")
+        model.save(f"{models_dir}/{TIMESTEPS * iters*40}")
 
 
 if __name__ == '__main__':
