@@ -106,7 +106,7 @@ class SubGoalEnv(gym.Env):
                 done = True
         elif self.env_name == "pick-place-v2":
             # give reward for distance to object
-            _TARGET_RADIUS = 0.05
+            _TARGET_RADIUS = 0.03
             obj_pos = pretty_obs(obs)['first_obj'][:3]
             gripper_pos = self.env.tcp_center
             gripper_to_obj = np.linalg.norm(obj_pos - gripper_pos)
@@ -115,21 +115,28 @@ class SubGoalEnv(gym.Env):
                                               bounds=(0, _TARGET_RADIUS),
                                               margin=in_place_margin,
                                               sigmoid='long_tail', )
-
+            # print("gripper to object rew,",gripper_to_obj_reward)
             # give reward for grasping the object
             grasp_reward = info['grasp_reward']
             # if already grasped and grasped again, give negativ reward
             if self.already_grasped and actiontype == 1:
                 return -1, False
+            elif info['grasp_reward'] > 0.42:
+                self.already_grasped = True
+            else:
+                self.already_grasped = False
 
             # if grasped give reward for how near the object is to goal position
-            obj_to_goal_reward = info['in_place_reward']
-
+            if info['grasp_reward'] > 0.42:
+                obj_to_goal_reward = 4*info['in_place_reward']
+            else:
+                obj_to_goal_reward = 0
+            # print("o to g:",obj_to_goal_reward)
             # return total reward
             if info['success']:
-                return 100,True
+                return 100, True
             else:
-                return (gripper_to_obj_reward+grasp_reward+obj_to_goal_reward), False
+                return (reward + gripper_to_obj_reward +grasp_reward+obj_to_goal_reward), False
 
 
 
