@@ -134,7 +134,7 @@ class SubGoalEnv(gym.Env):
             else:
                 obj_to_goal_reward = 0
             # return total reward
-            if info['success']:
+            if 'success' in info and info['success']:
                 return 100, True
             else:
                 return (reward + gripper_to_obj_reward +grasp_reward+obj_to_goal_reward), False
