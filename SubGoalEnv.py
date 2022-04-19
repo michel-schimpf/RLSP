@@ -117,13 +117,13 @@ class SubGoalEnv(gym.Env):
                                               sigmoid='long_tail', )
             # print("gripper to object rew,",gripper_to_obj_reward)
             # give reward for grasping the object
-            grasp_reward =0
+            grasp_reward = 0
             if 'grasp_reward' in info:
                 grasp_reward = info['grasp_reward']
             # if already grasped and grasped again, give negativ reward
             if self.already_grasped and actiontype == 1:
                 return -1, False
-            elif info['grasp_reward'] > 0.42:
+            elif grasp_reward > 0.42:
                 self.already_grasped = True
             else:
                 self.already_grasped = False
