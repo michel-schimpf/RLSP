@@ -1,9 +1,11 @@
 import gym
+from gym.wrappers import Monitor
 from stable_baselines3 import PPO
 import os
 import numpy as np
 from SubGoalEnv import SubGoalEnv
 from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.vec_env import VecMonitor
 
 
 def train():
@@ -11,13 +13,18 @@ def train():
     ALGO = PPO
     models_dir = f"models/{algo}"
     logdir = "logs"
-    TIMESTEPS = 1024
-
+    TIMESTEPS = 4096
     env = SubGoalEnv("pick-place-v2")
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,])
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             ])
+    env_vec = VecMonitor(env_vec, "logs/PPO_0")
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir)
     # model = ALGO.load("models/PPO/2555904", env=env_vec)
     iters = 0
