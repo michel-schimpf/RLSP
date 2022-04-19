@@ -14,7 +14,10 @@ def train():
     TIMESTEPS = 4096
 
     env = SubGoalEnv("pick-place-v2")
-    env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,])
+    env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,])
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir)
     # model = ALGO.load("models/PPO/2555904", env=env_vec)
     iters = 0
