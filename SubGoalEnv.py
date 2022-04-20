@@ -140,10 +140,10 @@ class SubGoalEnv(gym.Env):
             if 'success' in info and info['success']:
                 return 100, True
             else:
-                print("r:",reward)
-                print("gto r:",gripper_to_obj_reward)
-                print("g r;",grasp_reward)
-                print("otg r:", obj_to_goal_reward)
+                # print("r:",reward)
+                # print("gto r:",gripper_to_obj_reward)
+                # print("g r;",grasp_reward)
+                # print("otg r:", obj_to_goal_reward)
                 return (reward + gripper_to_obj_reward + grasp_reward +obj_to_goal_reward), False
 
 
