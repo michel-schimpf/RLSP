@@ -3,7 +3,6 @@ from helper import pretty_obs_subgoal
 import gym
 from stable_baselines3 import PPO,DDPG,SAC
 from SubGoalEnv import SubGoalEnv, scale_action_to_env_pos
-from gym.wrappers import Monitor
 ALGO = PPO
 
 models_dir = "models/PPO"
@@ -12,7 +11,7 @@ env = SubGoalEnv("pick-place-v2", render_subactions=True)
 # env = Monitor(env, './video', video_callable=lambda episode_id: True, force=True)
 env.reset()
 
-model_path = f"{models_dir}/2801664.zip"
+model_path = f"{models_dir}/11960320.zip"
 model = ALGO.load(model_path, env=env)
 episodes = 50
 mean_rew_all_tasks =0

@@ -1,7 +1,7 @@
 import time
 from SubGoalEnv import  SubGoalEnv, scale_action_to_env_pos, scale_env_pos_to_action
 from helper import pretty_obs_subgoal
-env = SubGoalEnv("pick-place-v2", render_subactions=True)
+env = SubGoalEnv("pick-place-v2", render_subactions=False)
 env.reset()
 total_reach =0
 for i in range(20):
