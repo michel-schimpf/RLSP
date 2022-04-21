@@ -105,46 +105,53 @@ class SubGoalEnv(gym.Env):
                 reward = 10
                 done = True
         elif self.env_name == "pick-place-v2":
-            # give reward for distance to object
-            _TARGET_RADIUS = 0.03
-            obj_pos = pretty_obs(obs)['first_obj'][:3]
-            gripper_pos = self.env.tcp_center
-            gripper_to_obj = np.linalg.norm(obj_pos - gripper_pos)
-            in_place_margin = (np.linalg.norm(self.env.hand_init_pos - obj_pos))
-            gripper_to_obj_reward = reward_utils.tolerance(gripper_to_obj,
-                                              bounds=(0, _TARGET_RADIUS),
-                                              margin=in_place_margin,
-                                              sigmoid='long_tail', )
-
-            # give reward for grasping the object
-            grasp_reward = 0
-            if 'grasp_reward' in info:
-                grasp_reward = info['grasp_reward']
-
-            # if already grasped and grasped again, give negativ reward
-            is_grasped = grasp_reward > 0.42
-            if is_grasped:
-                if self.already_grasped and actiontype == 1:
-                    grasp_reward = 0
-                elif actiontype == 0:
-                    grasp_reward += 1
-            self.already_grasped = is_grasped
-
-            # if grasped give reward for how near the object is to goal position
-            #Todo: check if neccessary with already grasped
-            if is_grasped and not(self.already_grasped and actiontype == 1) and 'in_place_reward' in info:
-                obj_to_goal_reward = 4*info['in_place_reward']
-            else:
-                obj_to_goal_reward = 0
-            # return total reward
+            done = False
             if 'success' in info and info['success']:
-                return 100, True
+                done = True
+            if 'unscaled_reward' in info:
+                return info['unscaled_reward'], done
             else:
-                # print("r:",reward)
-                # print("gto r:",gripper_to_obj_reward)
-                # print("g r;",grasp_reward)
-                # print("otg r:", obj_to_goal_reward)
-                return (reward + gripper_to_obj_reward + grasp_reward +obj_to_goal_reward), False
+                return 0, done
+            # # give reward for distance to object
+            # _TARGET_RADIUS = 0.03
+            # obj_pos = pretty_obs(obs)['first_obj'][:3]
+            # gripper_pos = self.env.tcp_center
+            # gripper_to_obj = np.linalg.norm(obj_pos - gripper_pos)
+            # in_place_margin = (np.linalg.norm(self.env.hand_init_pos - obj_pos))
+            # gripper_to_obj_reward = reward_utils.tolerance(gripper_to_obj,
+            #                                   bounds=(0, _TARGET_RADIUS),
+            #                                   margin=in_place_margin,
+            #                                   sigmoid='long_tail', )
+            #
+            # # give reward for grasping the object
+            # grasp_reward = 0
+            # if 'grasp_reward' in info:
+            #     grasp_reward = info['grasp_reward']
+            #
+            # # if already grasped and grasped again, give negativ reward
+            # is_grasped = grasp_reward > 0.42
+            # if is_grasped:
+            #     if self.already_grasped and actiontype == 1:
+            #         grasp_reward = 0
+            #     elif actiontype == 0:
+            #         grasp_reward += 1
+            # self.already_grasped = is_grasped
+            #
+            # # if grasped give reward for how near the object is to goal position
+            # #Todo: check if neccessary with already grasped
+            # if is_grasped and not(self.already_grasped and actiontype == 1) and 'in_place_reward' in info:
+            #     obj_to_goal_reward = 4*info['in_place_reward']
+            # else:
+            #     obj_to_goal_reward = 0
+            # # return total reward
+            # if 'success' in info and info['success']:
+            #     return 100, True
+            # else:
+            #     # print("r:",reward)
+            #     # print("gto r:",gripper_to_obj_reward)
+            #     # print("g r;",grasp_reward)
+            #     # print("otg r:", obj_to_goal_reward)
+            #     return (reward + gripper_to_obj_reward + grasp_reward +obj_to_goal_reward), False
 
 
 

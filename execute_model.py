@@ -7,11 +7,11 @@ ALGO = PPO
 
 models_dir = "models/PPO"
 
-env = SubGoalEnv("pick-place-v2", render_subactions=True)
+env = SubGoalEnv("pick-place-v2", render_subactions=False)
 # env = Monitor(env, './video', video_callable=lambda episode_id: True, force=True)
 env.reset()
 
-model_path = f"{models_dir}/11960320.zip"
+model_path = f"{models_dir}/3112960.zip"
 model = ALGO.load(model_path, env=env)
 episodes = 50
 mean_rew_all_tasks =0
