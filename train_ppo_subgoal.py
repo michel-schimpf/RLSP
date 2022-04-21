@@ -18,15 +18,7 @@ def train():
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env,
                              ])
     env_vec = VecMonitor(env_vec, "logs/PPO_0")
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS)
