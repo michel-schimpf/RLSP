@@ -36,7 +36,7 @@ def train():
     while True:
         iters += 1
         model.learn(total_timesteps=TIMESTEPS, reset_num_timesteps=False,
-                    tb_log_name=algo,)
+                    tb_log_name=algo, log_interval=512)
         model.save(f"{models_dir}/{TIMESTEPS * iters}")
 
 
