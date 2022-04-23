@@ -12,7 +12,6 @@ for i in range(20):
     print("goal:", goal)
     action_to_reach_goal = scale_env_pos_to_action(goal)
     action_to_reach_goal.append(1)
-    action_to_reach_goal[0] += 0.1
     print("action:", action_to_reach_goal)
     obs, r, d, i1 = env.step(action_to_reach_goal)
     print("reward:", r)
