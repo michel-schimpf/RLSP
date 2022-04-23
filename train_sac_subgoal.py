@@ -16,7 +16,19 @@ def train():
     TIMESTEPS = 5000
 
     env = SubGoalEnv("pick-place-v2")
-    env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env,lambda: env,])
+    env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             ])
     env_vec = VecMonitor(env_vec, "logs/SAC_0")
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir,)
     # model = ALGO.load("models/SAC/1220000", env=env_vec)
