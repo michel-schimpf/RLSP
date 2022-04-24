@@ -108,8 +108,7 @@ class SubGoalEnv(gym.Env):
             done = False
             if info['success']:
                 done = True
-            else:
-                return info['unscaled_reward'], done
+            return re, done
             # # give reward for distance to object
             # _TARGET_RADIUS = 0.03
             # obj_pos = pretty_obs(obs)['first_obj'][:3]
@@ -166,10 +165,6 @@ class SubGoalEnv(gym.Env):
             #             self.already_grasped = True
             #         else:
             #             self.already_grasped = False
-        if 'success' in info and info['success']:
-            reward = 300
-            done = True
-        return reward, done
 
     def render(self, mode="human"):
         self.env.render()
@@ -202,6 +197,7 @@ class SubGoalEnv(gym.Env):
         # find trajectory to reach coordinates
         # use tcp_center because its more accurat then obs
         sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos, gripper_closed=gripper_closed)
+        reward = 0
         if len(sub_actions) == 0:
             obs, reward, done, info = self.env.step([0, 0, 0, 0])
             # print("JUHU")
