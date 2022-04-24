@@ -97,7 +97,7 @@ class SubGoalEnv(gym.Env):
         self.render_subactions = render_subactions
         self.already_grasped = False
 
-    def _calculate_reward(self, info: Dict[str, bool], obs: [float], actiontype ) -> (int, bool):
+    def _calculate_reward(self, re, info: Dict[str, bool], obs: [float], actiontype ) -> (int, bool):
         reward = -1
         done = False
         if self.env_name == "reach-v2":
@@ -106,12 +106,10 @@ class SubGoalEnv(gym.Env):
                 done = True
         elif self.env_name == "pick-place-v2":
             done = False
-            if 'success' in info and info['success']:
+            if info['success']:
                 done = True
-            if 'unscaled_reward' in info:
-                return info['unscaled_reward'], done
             else:
-                return 0, done
+                return info['unscaled_reward'], done
             # # give reward for distance to object
             # _TARGET_RADIUS = 0.03
             # obj_pos = pretty_obs(obs)['first_obj'][:3]
@@ -204,6 +202,18 @@ class SubGoalEnv(gym.Env):
         # find trajectory to reach coordinates
         # use tcp_center because its more accurat then obs
         sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos, gripper_closed=gripper_closed)
+        if len(sub_actions) == 0:
+            obs, reward, done, info = self.env.step([0, 0, 0, 0])
+            # print("JUHU")
+            done = False
+            obs = new_obs(obs)
+            self.number_steps += 1
+            if info["success"]:
+                done = True
+            if self.number_steps >= self._max_episode_length:
+                info["TimeLimit.truncated"] = not done
+                done = True
+            return obs, reward, done, info
 
         # open gripper if picking
         if actiontype == 1:
@@ -264,7 +274,7 @@ class SubGoalEnv(gym.Env):
                     self.env.render()
                     time.sleep(0.05)
         # calculate reward
-        reward, done = self._calculate_reward(info, obs, actiontype)
+        reward, done = self._calculate_reward(reward, info, obs, actiontype)
 
         self.number_steps += 1
         obs = new_obs(obs)
