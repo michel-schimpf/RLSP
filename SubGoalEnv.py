@@ -98,15 +98,18 @@ class SubGoalEnv(gym.Env):
         self.already_grasped = False
 
     def _calculate_reward(self, re, info: Dict[str, bool], obs: [float], actiontype ) -> (int, bool):
-        reward = -1
+
         done = False
         if self.env_name == "reach-v2":
+            reward = -1
             if 'success' in info and info['success']:
                 reward = 10
                 done = True
         elif self.env_name == "pick-place-v2":
-            if info['success']:
-                done = True
+            # reward = re
+            # if info['success']:
+            #     done = True
+            #     re = 200
             return re, done
             # # give reward for distance to object
             # _TARGET_RADIUS = 0.03

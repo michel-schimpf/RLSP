@@ -1,10 +1,10 @@
 import time
 from SubGoalEnv import  SubGoalEnv, scale_action_to_env_pos, scale_env_pos_to_action
 from helper import pretty_obs_subgoal
-env = SubGoalEnv("pick-place-v2", render_subactions=False)
+env = SubGoalEnv("pick-place-v2", render_subactions=True)
 env.reset()
 total_reach =0
-for i in range(20):
+for i in range(3):
     obs = env.reset()
     print("----------------------\nTest pick random actions:\n----------------------")
     print(obs)
@@ -85,7 +85,8 @@ for i in range(20):
     print(pretty_obs_subgoal(obs))
     goal = pretty_obs_subgoal(obs)['goal']
     print("goal:", goal)
-    goal[0] -= 0.2
+    goal[0] -= 0.1
+    goal[1] -= 0.1
     action_to_reach_goal = scale_env_pos_to_action(goal)
     action_to_reach_goal.append(-1)
     print("action:", action_to_reach_goal)
@@ -101,7 +102,7 @@ for i in range(20):
     print(pretty_obs_subgoal(obs))
     goal = pretty_obs_subgoal(obs)['goal']
     print("goal:", goal)
-    # goal[0] -= 0.1
+    # goal[0] = 0.1
     action_to_reach_goal = scale_env_pos_to_action(goal)
     action_to_reach_goal.append(-0.1)
     print("action:", action_to_reach_goal)

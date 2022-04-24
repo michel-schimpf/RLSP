@@ -3,7 +3,7 @@ import numpy as np
 from SubGoalEnv import SubGoalEnv, scale_action_to_env_pos, scale_env_pos_to_action
 from helper import pretty_obs_subgoal
 
-env = SubGoalEnv("pick-place-v2", render_subactions=True)
+env = SubGoalEnv("pick-place-v2", render_subactions=False)
 obs = env.reset()
 print("----------------------\nTest action to env point\n----------------------")
 actions = [[-1, -1, -0.9, 0], [1, -1, -0.1, 0], [-1, 1, -0.1, 0], [1, 1, -0.1, 0],
@@ -48,14 +48,18 @@ total_reach = 0
 #
 #     print("--------------------------------------------")
 
-
-for i in range(1000):
+total_reward =0
+it= 1000
+for i in range(it):
     obs = env.reset()
     print("o:", obs[:4])
     a = env.action_space.sample()
     print("a:", a)
     print("pos:", scale_action_to_env_pos(a))
     obs, r, d, i1 = env.step(a)
+    total_reward += r
+    print("reward:", r)
+    print("---")
     print("o:", obs[:4])
     goal = pretty_obs_subgoal(obs)['first_obj']
     distance_to_subgoal = np.linalg.norm(obs[:3] - goal[:3])
@@ -65,8 +69,10 @@ for i in range(1000):
     action_to_reach_goal.append(1)
     print("action:", action_to_reach_goal)
     obs, r, d, i1 = env.step(action_to_reach_goal)
+    total_reward += r
     print("reward:", r)
     print("info", i1)
+    print("---")
     print(pretty_obs_subgoal(obs))
     goal = pretty_obs_subgoal(obs)['goal']
     print("goal:", goal)
@@ -74,6 +80,7 @@ for i in range(1000):
     action_to_reach_goal.append(-1)
     print("action:", action_to_reach_goal)
     obs, r, d, i2 = env.step(action_to_reach_goal)
+    total_reward += r
     print("reward:", r)
     print(i2)
     if i2['success']:
@@ -83,7 +90,9 @@ for i in range(1000):
         print("not reached with:", action_to_reach_goal)
 
     print("--------------------------------------------")
+
 print("total_rach of 8:", total_reach)
+print("total mean rew:",total_reward/it)
 
 
 
