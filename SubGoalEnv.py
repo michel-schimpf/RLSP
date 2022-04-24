@@ -105,7 +105,6 @@ class SubGoalEnv(gym.Env):
                 reward = 10
                 done = True
         elif self.env_name == "pick-place-v2":
-            done = False
             if info['success']:
                 done = True
             return re, done
