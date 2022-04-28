@@ -49,7 +49,7 @@ total_reach = 0
 #     print("--------------------------------------------")
 
 total_reward =0
-it= 1000
+it= 100
 for i in range(it):
     obs = env.reset()
     print("o:", obs[:4])
@@ -91,7 +91,7 @@ for i in range(it):
 
     print("--------------------------------------------")
 
-print("total_rach of 8:", total_reach)
+print("total_rach of 1000:", total_reach)
 print("total mean rew:",total_reward/it)
 
 
