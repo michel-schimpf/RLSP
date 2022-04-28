@@ -133,8 +133,12 @@ class SubGoalEnv(gym.Env):
                     grasp_reward = 0
                 elif actiontype == 0:
                     grasp_reward += 1
-            self.already_grasped = is_grasped
+            else:
+                if actiontype == 0:
+                    grasp_reward = 0
 
+                #Todo: give reward if it is not grasped and it tries to grasp, and no reward when it does try to grasp
+            self.already_grasped = is_grasped
             # if grasped give reward for how near the object is to goal position
             #Todo: check if neccessary with already grasped
             obj_to_goal_reward = 0
