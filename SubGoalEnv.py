@@ -131,8 +131,6 @@ class SubGoalEnv(gym.Env):
             if is_grasped:
                 if self.already_grasped and actiontype == 1:
                     grasp_reward = 0
-                elif actiontype == 0:
-                    grasp_reward += 1
             else:
                 if actiontype == 0:
                     grasp_reward = 0
@@ -143,10 +141,10 @@ class SubGoalEnv(gym.Env):
             #Todo: check if neccessary with already grasped
             obj_to_goal_reward = 0
             if is_grasped and not(self.already_grasped and actiontype == 1) and 'in_place_reward' in info:
-                obj_to_goal_reward = 4*info['in_place_reward']
+                obj_to_goal_reward = 10*info['in_place_reward']
             # return total reward
             if 'success' in info and info['success']:
-                return 100, True
+                return 100, False
             else:
                 # print("r:",reward)
                 # print("gto r:",gripper_to_obj_reward)
