@@ -12,11 +12,10 @@ from metaworld.envs import reward_utils
 
 # Todo: add types
 
-# not tested jet
+
 def scale_action_to_env_pos(action):
     action = np.clip(action, -1, 1)
     action_dimension = [(-1, 1), (-1, 1), (-1, 1)]
-    # todo do good fix
     env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.04604, 0.49672)]  # figured out by trying
     env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.0, 0.49672)]  # add a bit of marging
     env_pos = []
@@ -29,10 +28,8 @@ def scale_action_to_env_pos(action):
 
 def scale_env_pos_to_action(env_pos):
     action_dimension = [(-1, 1), (-1, 1), (-1, 1)]
-    # todo do good fix
     env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.04604, 0.49672)]  # figured out by trying
     env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.0, 0.49672)]  # add a bit of marging
-
     action = []
     for i in range(3):
         action_range = (action_dimension[i][1] - action_dimension[i][0])
@@ -124,7 +121,7 @@ class SubGoalEnv(gym.Env):
             # give reward for grasping the object
             grasp_reward = 0
             if 'grasp_reward' in info:
-                grasp_reward = info['grasp_reward']
+                grasp_reward = 4*info['grasp_reward']
 
             # if already grasped and grasped again, give negativ reward
             is_grasped = grasp_reward > 0.42
@@ -141,10 +138,10 @@ class SubGoalEnv(gym.Env):
             #Todo: check if neccessary with already grasped
             obj_to_goal_reward = 0
             if is_grasped and not(self.already_grasped and actiontype == 1) and 'in_place_reward' in info:
-                obj_to_goal_reward = 10*info['in_place_reward']
+                obj_to_goal_reward = 30*info['in_place_reward']
             # return total reward
             if 'success' in info and info['success']:
-                return 100, False
+                return 200, False
             else:
                 # print("r:",reward)
                 # print("gto r:",gripper_to_obj_reward)

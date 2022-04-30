@@ -11,7 +11,7 @@ env = SubGoalEnv("pick-place-v2", render_subactions=True)
 # env = Monitor(env, './video', video_callable=lambda episode_id: True, force=True)
 env.reset()
 
-model_path = f"{models_dir}/2678784.zip"
+model_path = f"{models_dir}/2605056.zip"
 model = ALGO.load(model_path, env=env)
 episodes = 50
 mean_rew_all_tasks = 0
