@@ -144,14 +144,14 @@ class SubGoalEnv(gym.Env):
             # return total reward
             # print("original reward:", re)
             if 'success' in info and info['success']:
-                return 10, False
+                return 20, True
             else:
                 # print("r:",reward)
                 # print("gto r:",gripper_to_obj_reward)
                 # print("g r;",grasp_reward)
                 # print("otg r:", obj_to_goal_reward)
                 # print(f"reward compontents: g_to_obj_r: {gripper_to_obj_reward}, grasp_r: {grasp_reward}, obj_to_g_r: {obj_to_goal_reward}")
-                return (gripper_to_obj_reward * 1/6 + grasp_reward * 2/6 + obj_to_goal_reward * 3/6), False
+                return (reward + gripper_to_obj_reward * 1/6 + grasp_reward * 2/6 + obj_to_goal_reward * 3/6), False
 
 
 
@@ -203,12 +203,8 @@ class SubGoalEnv(gym.Env):
         reward = 0
         if len(sub_actions) == 0:
             obs, reward, done, info = self.env.step([0, 0, 0, 0])
-            # print("JUHU")
-            done = False
-            obs = new_obs(obs)
+            reward, done = self._calculate_reward(reward, info, obs, actiontype)
             self.number_steps += 1
-            if info["success"]:
-                done = False
             if self.number_steps >= self._max_episode_length:
                 info["TimeLimit.truncated"] = not done
                 done = True
