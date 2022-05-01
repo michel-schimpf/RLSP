@@ -208,6 +208,7 @@ class SubGoalEnv(gym.Env):
             if self.number_steps >= self._max_episode_length:
                 info["TimeLimit.truncated"] = not done
                 done = True
+            obs = new_obs(obs)
             return obs, reward, done, info
 
         # open gripper if picking

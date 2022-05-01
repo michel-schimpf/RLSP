@@ -1,5 +1,5 @@
 import gym
-from gym.wrappers import Monitor
+# from gym.wrappers import Monitor
 from stable_baselines3 import PPO
 import os
 import numpy as np
@@ -32,7 +32,7 @@ def train():
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS)
     # model = ALGO.load("models/PPO/3293184", env=env_vec)
     iters = 0
-    
+
     while True:
         print(iters)
         iters += 1
