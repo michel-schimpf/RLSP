@@ -13,9 +13,28 @@ for i in range(3):
     print(obs)
     goal = pretty_obs_subgoal(obs)['first_obj']
     print("goal:", goal)
+    action_to_reach_goal = env.action_space.sample()
+    print("action:", action_to_reach_goal)
+    obs, r, d, i1 = env.step(action_to_reach_goal)
+    print("reward:", r)
+    print("info", i1)
+    print("----------------------\nTest pick random actions:\n----------------------")
+    print(obs)
+    goal = pretty_obs_subgoal(obs)['first_obj']
+    print("goal:", goal)
     action_to_reach_goal = scale_env_pos_to_action(goal)
     action_to_reach_goal.append(1)
-    # action_to_reach_goal[0] += 0.05
+    action_to_reach_goal[0] += 0.1
+    print("action:", action_to_reach_goal)
+    obs, r, d, i1 = env.step(action_to_reach_goal)
+    print("reward:", r)
+    print("info", i1)
+    print("----------------------\nTest pick random actions:\n----------------------")
+    print(obs)
+    goal = pretty_obs_subgoal(obs)['first_obj']
+    print("goal:", goal)
+    action_to_reach_goal = scale_env_pos_to_action(goal)
+    action_to_reach_goal.append(1)
     print("action:", action_to_reach_goal)
     obs, r, d, i1 = env.step(action_to_reach_goal)
     print("reward:", r)
