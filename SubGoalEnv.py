@@ -121,7 +121,7 @@ class SubGoalEnv(gym.Env):
             # give reward for grasping the object
             grasp_reward = 0
             if 'grasp_reward' in info:
-                grasp_reward = 4*info['grasp_reward']
+                grasp_reward = info['grasp_reward']
 
             # if already grasped and grasped again, give negativ reward
             is_grasped = grasp_reward > 0.42
@@ -131,14 +131,12 @@ class SubGoalEnv(gym.Env):
             else:
                 if actiontype == 0:
                     grasp_reward = 0
-
-                #Todo: give reward if it is not grasped and it tries to grasp, and no reward when it does try to grasp
             self.already_grasped = is_grasped
             # if grasped give reward for how near the object is to goal position
             #Todo: check if neccessary with already grasped
             obj_to_goal_reward = 0
-            if is_grasped and not(self.already_grasped and actiontype == 1) and 'in_place_reward' in info:
-                obj_to_goal_reward = 30*info['in_place_reward']
+            if is_grasped and not(self.already_grasped and actiontype == 1) and 'obj_to_target' in info:
+                obj_to_goal_reward = (1-info['obj_to_target'])
             # return total reward
             if 'success' in info and info['success']:
                 return 200, False
@@ -147,7 +145,7 @@ class SubGoalEnv(gym.Env):
                 # print("gto r:",gripper_to_obj_reward)
                 # print("g r;",grasp_reward)
                 # print("otg r:", obj_to_goal_reward)
-                return (reward + gripper_to_obj_reward + grasp_reward + obj_to_goal_reward), False
+                return (reward + gripper_to_obj_reward/2 + grasp_reward + obj_to_goal_reward*2), False
 
 
 
@@ -204,7 +202,7 @@ class SubGoalEnv(gym.Env):
             obs = new_obs(obs)
             self.number_steps += 1
             if info["success"]:
-                done = True
+                done = False
             if self.number_steps >= self._max_episode_length:
                 info["TimeLimit.truncated"] = not done
                 done = True
