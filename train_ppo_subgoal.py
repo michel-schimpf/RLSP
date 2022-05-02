@@ -30,8 +30,8 @@ def train():
                              ])
     env_vec = VecMonitor(env_vec, "logs/PPO_0")
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS)
-    model = ALGO.load("models/PPO/4595712", env=env_vec)
-    iters = 188
+    model = ALGO.load("models/PPO/4816896", env=env_vec)
+    iters = 197
     while True:
         print(iters)
         iters += 1
