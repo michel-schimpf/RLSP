@@ -1,7 +1,7 @@
 import time
 
 from SubGoalEnv import  SubGoalEnv, scale_action_to_env_pos, scale_env_pos_to_action
-from helper import pretty_obs_subgoal
+from helper import pretty_obs
 env = SubGoalEnv("pick-place-v2", render_subactions=False)
 env.reset()
 
@@ -12,8 +12,8 @@ for i in range(5):
     e_pos = scale_action_to_env_pos(action)
     print("expected env pos", scale_action_to_env_pos(action))
     o, r, d, i = env.step(action)
-    print("observation:", pretty_obs_subgoal(o))
-    o_g_pos = pretty_obs_subgoal(o)["gripper_pos"]
+    print("observation:", pretty_obs(o))
+    o_g_pos = pretty_obs(o)["gripper_pos"]
     print("diffrence: x:", abs(o_g_pos[0] - e_pos[0]), " y: ", abs(o_g_pos[1] - e_pos[1]), " y: ",
           abs(o_g_pos[2] - e_pos[2]),)
     print("info:",i,"\n")
@@ -24,7 +24,7 @@ num_suc = 0
 for i in range(20):
     env.reset()
     obs = env.reset()
-    goal = pretty_obs_subgoal(obs)['goal']
+    goal = pretty_obs(obs)['goal']
     print("goal:",goal)
     action_to_reach_goal = scale_env_pos_to_action(goal)
     print("action:")

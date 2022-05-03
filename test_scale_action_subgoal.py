@@ -1,7 +1,6 @@
 import numpy as np
 
-from SubGoalEnv import SubGoalEnv, scale_action_to_env_pos, scale_env_pos_to_action
-from helper import pretty_obs_subgoal
+from SubGoalEnv import SubGoalEnv, scale_action_to_env_pos, scale_env_pos_to_action, pretty_obs
 
 env = SubGoalEnv("pick-place-v2", render_subactions=False)
 obs = env.reset()
@@ -18,7 +17,7 @@ total_reach = 0
 #     print("pos:", scale_action_to_env_pos(a))
 #     obs, r, d, i1 = env.step(a)
 #
-#     goal = pretty_obs_subgoal(obs)['goal']
+#     goal = pretty_obs(obs)['goal']
 #     distance_to_subgoal = np.linalg.norm(obs[:3] - goal[:3])
 #     print("distance to goal:", distance_to_subgoal)
 #
@@ -26,7 +25,7 @@ total_reach = 0
 #     # -----
 #     print("---")
 #     print("o:", obs[:4])
-#     first_obj = pretty_obs_subgoal(obs)['first_obj']
+#     first_obj = pretty_obs(obs)['first_obj']
 #     print("first_obj:", first_obj)
 #     action_to_reach_goal = scale_env_pos_to_action(first_obj)
 #     action_to_reach_goal.append(1)
@@ -37,8 +36,8 @@ total_reach = 0
 #     print("info", i1)
 #     #  -----
 #     print("---")
-#     print(pretty_obs_subgoal(obs))
-#     goal = pretty_obs_subgoal(obs)['goal']
+#     print(pretty_obs(obs))
+#     goal = pretty_obs(obs)['goal']
 #     print("goal:", goal)
 #     action_to_reach_goal = scale_env_pos_to_action(goal)
 #     action_to_reach_goal.append(-1)
@@ -67,7 +66,7 @@ for i in range(it):
     print("reward:", r)
     print("---")
     print("o:", obs[:4])
-    goal = pretty_obs_subgoal(obs)['first_obj']
+    goal = pretty_obs(obs)['first_obj']
     distance_to_subgoal = np.linalg.norm(obs[:3] - goal[:3])
     print("distance to object:", distance_to_subgoal)
     print("goal:", goal)
@@ -79,8 +78,8 @@ for i in range(it):
     print("reward:", r)
     print("info", i1)
     print("---")
-    print(pretty_obs_subgoal(obs))
-    goal = pretty_obs_subgoal(obs)['goal']
+    print(pretty_obs(obs))
+    goal = pretty_obs(obs)['goal']
     print("goal:", goal)
     action_to_reach_goal = scale_env_pos_to_action(goal)
     action_to_reach_goal.append(-1)

@@ -3,7 +3,7 @@ import gym
 from stable_baselines3 import PPO
 import os
 import numpy as np
-from SubGoalEnv import SubGoalEnv
+from SubGoalEnv2 import SubGoalEnv
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.vec_env import VecMonitor
 
@@ -30,8 +30,8 @@ def train():
                              ])
     env_vec = VecMonitor(env_vec, "logs/PPO_0")
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS)
-    model = ALGO.load("models/PPO/4816896", env=env_vec)
-    iters = 197
+    # model = ALGO.load("models/PPO/4472832", env=env_vec)
+    iters = 0
     while True:
         print(iters)
         iters += 1
