@@ -190,14 +190,16 @@ class SubGoalEnv(gym.Env):
                 done = True
             return obs, reward, done, info
 
-        # open gripper if picking
         if actiontype == 1:
+            # open gripper if picking
             for i in range(4):
-                obs, reward, done, info = self.env.step(place())
+                obs, reward, done, info = self.env.step([0, 0, 0.8, -1])
                 if self.render_subactions:
                     # print("render")
                     self.env.render()
                     time.sleep(0.05)
+        #Todo reformat
+        sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos, gripper_closed=gripper_closed)
 
         # loop over actions and perform actions on enviroment
         info = {}

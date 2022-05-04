@@ -3,7 +3,7 @@ import time
 import gym
 import numpy as np
 from stable_baselines3 import PPO , DDPG ,SAC
-from SubGoalEnv import SubGoalEnv, scale_action_to_env_pos
+from SubGoalEnv2 import SubGoalEnv, scale_action_to_env_pos
 from helper import pretty_obs
 ALGO = PPO
 
@@ -13,10 +13,11 @@ env = SubGoalEnv("pick-place-v2", render_subactions=False)
 # env = Monitor(env, './video', video_callable=lambda episode_id: True, force=True)
 env.reset()
 
-model_path = f"{models_dir}/21823488.zip"
+model_path = f"{models_dir}/4227072.zip"
 model = ALGO.load(model_path, env=env)
 episodes = 1000
 mean_rew_all_tasks = 0
+
 mean_steps = 0
 for ep in range(episodes):
     print("\n---------\nepisode:", ep)
