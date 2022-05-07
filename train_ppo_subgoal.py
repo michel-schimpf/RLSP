@@ -29,7 +29,7 @@ def train():
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              ])
     env_vec = VecMonitor(env_vec, "logs/PPO_0")
-    model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS)
+    model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS, batch_size=256)
     # model = ALGO.load("models/PPO/4472832", env=env_vec)
     iters = 0
     while True:

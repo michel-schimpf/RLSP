@@ -9,7 +9,7 @@ actions = [[-1, -1, -0.9, 0], [1, -1, -0.1, 0], [-1, 1, -0.1, 0], [1, 1, -0.1, 0
            [-1, -1, 1, 0], [1, -1, 1, 0], [-1, 1, 1, 0], [1, 1, 1, 0], ]
 total_reach = 0
 
-
+#
 # for a in actions:
 #     obs = env.reset()
 #     print("o:", obs[:4])
@@ -42,6 +42,7 @@ total_reach = 0
 #     action_to_reach_goal = scale_env_pos_to_action(goal)
 #     action_to_reach_goal.append(-1)
 #     print("action:", action_to_reach_goal)
+#     print("action as env pos:", scale_action_to_env_pos(action_to_reach_goal))
 #     obs, r, d, i2 = env.step(action_to_reach_goal)
 #     print("reward:", r)
 #     print(i2)
@@ -53,8 +54,8 @@ total_reach = 0
 #
 #     print("--------------------------------------------")
 
-total_reward =0
-it= 1000
+total_reward = 0
+it= 200
 for i in range(it):
     obs = env.reset()
     print("o:", obs[:4])
@@ -95,9 +96,9 @@ for i in range(it):
         print("not reached with:", action_to_reach_goal)
 
     print("--------------------------------------------")
-
+#
 print("total_rach of 1000:", total_reach)
-print("total mean rew:",total_reward/it)
+# print("total mean rew:",total_reward/it)
 
 
 

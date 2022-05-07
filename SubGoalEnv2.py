@@ -18,6 +18,7 @@ def scale_action_to_env_pos(action):
     action_dimension = [(-1, 1), (-1, 1), (-1, 1)]
     env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.04604, 0.49672)]  # figured out by trying
     env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.0, 0.49672)]  # add a bit of marging
+    env_dimension = [(-0.15, 0.15), (0.58, 0.91), (0.0, 0.31)]  # add a bit of marging
     env_pos = []
     for i in range(3):
         action_range = (action_dimension[i][1] - action_dimension[i][0])
@@ -30,6 +31,8 @@ def scale_env_pos_to_action(env_pos):
     action_dimension = [(-1, 1), (-1, 1), (-1, 1)]
     env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.04604, 0.49672)]  # figured out by trying
     env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.0, 0.49672)]  # add a bit of marging
+    #To make Env Smaller:
+    env_dimension = [(-0.15, 0.15), (0.58, 0.91), (0.0, 0.31)]  # add a bit of marging
     action = []
     for i in range(3):
         action_range = (action_dimension[i][1] - action_dimension[i][0])
