@@ -186,7 +186,7 @@ class SubGoalEnv(gym.Env):
                 info["TimeLimit.truncated"] = not done
                 done = True
             if done:
-                print("episode rew:", self.episode_rew)
+                print("task:", self.cur_task_index, " episode rew:", self.episode_rew)
                 self.episode_rew = 0
             return obs, reward, done, info
 
@@ -252,6 +252,6 @@ class SubGoalEnv(gym.Env):
             done = True
         self.episode_rew += reward
         if done:
-            print("episode rew:", self.episode_rew)
+            print("task:",self.cur_task_index, " episode rew:", self.episode_rew)
             self.episode_rew = 0
         return obs, reward, done, info
