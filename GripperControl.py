@@ -49,23 +49,23 @@ class Obstacle:
                (self.pos, self.size, self.vel, self.direction, self.dt)
 
     def collides_at_time_step(self, pos: Tuple[float, float, float], time_step: int, safety_margin: float) -> bool:
-        future_pos = self.future_obstacle_position(time_step)
+        f_pos = self.future_obstacle_position(time_step)
         # gripper dimension
         g_x_width = 0.01
         g_y_depth = 0.015
         g_z_up = 0.1
         g_z_down = 0.0
         # xmax1 >= xmin2 and xmin1 <= xmax2
-        if not (pos[0] + g_x_width + safety_margin >= future_pos[0] - self.size[0] and
-                pos[0] - g_x_width - safety_margin <= future_pos[0] + self.size[0]):
+        if not (pos[0] + g_x_width + safety_margin >= f_pos[0] - self.size[0] and
+                pos[0] - g_x_width - safety_margin <= f_pos[0] + self.size[0]):
             return False
         # ymax1 >= ymin2 and ymin1 <= ymax2
-        if not (pos[1] + g_y_depth + safety_margin >= future_pos[1] - self.size[1] and
-                pos[1] - g_y_depth - safety_margin <= future_pos[1] + self.size[1]):
+        if not (pos[1] + g_y_depth + safety_margin >= f_pos[1] - self.size[1] and
+                pos[1] - g_y_depth - safety_margin <= f_pos[1] + self.size[1]):
             return False
         # zmax1 >= zmin2 and zmin1 <= zmax2
-        if not (pos[2] + g_z_up + safety_margin >= future_pos[2] - self.size[2] and
-                pos[2] - g_z_down - safety_margin <= future_pos[2] + self.size[2]):
+        if not (pos[2] + g_z_up + safety_margin >= f_pos[2] - self.size[2] and
+                pos[2] - g_z_down - safety_margin <= f_pos[2] + self.size[2]):
             return False
         return True
 

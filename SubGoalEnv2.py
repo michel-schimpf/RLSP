@@ -89,6 +89,7 @@ class SubGoalEnv(gym.Env):
         self.number_steps = 0
         self.render_subactions = render_subactions
         self.already_grasped = False
+        self.episode_rew = 0
 
     def _calculate_reward(self, re, info: Dict[str, bool], obs: [float], actiontype ) -> (int, bool):
         reward = -1
@@ -135,6 +136,7 @@ class SubGoalEnv(gym.Env):
                 obj_to_goal_reward = info['in_place_reward']
             # return total reward
             # print("original reward:", re)
+
             if 'success' in info and info['success']:
                 return 0, True
             else:
@@ -178,9 +180,14 @@ class SubGoalEnv(gym.Env):
             obs, reward, done, info = self.env.step([0, 0, 0, 0])
             reward, done = self._calculate_reward(reward, info, obs, actiontype)
             self.number_steps += 1
+
+            self.episode_rew += reward
             if self.number_steps >= self._max_episode_length:
                 info["TimeLimit.truncated"] = not done
                 done = True
+            if done:
+                print("episode rew:", self.episode_rew)
+                self.episode_rew = 0
             return obs, reward, done, info
 
         if actiontype == 1:
@@ -243,4 +250,8 @@ class SubGoalEnv(gym.Env):
         if self.number_steps >= self._max_episode_length:
             info["TimeLimit.truncated"] = not done
             done = True
+        self.episode_rew += reward
+        if done:
+            print("episode rew:", self.episode_rew)
+            self.episode_rew = 0
         return obs, reward, done, info
