@@ -46,17 +46,7 @@ def pretty_obs(obs):
     return {'gripper_pos': obs[0:4], 'first_obj': obs[4:11], 'second_obj': obs[11:18],
             'goal': obs[36:39], 'last_measurements': obs[18:36]}
 
-#
-# def new_obs(obs):
-#     po = pretty_obs(obs)
-#     x = po['gripper_pos']
-#     x = np.append(x, po['first_obj'])
-#     x = np.append(x, po['second_obj'])
-#     x = np.append(x, po['goal'])
-#     return x
 
-
-# Todo: maybe take gym.env?
 class SubGoalEnv(gym.Env):
 
     def __init__(self, env="reach-v2", render_subactions=False):

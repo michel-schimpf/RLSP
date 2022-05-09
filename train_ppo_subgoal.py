@@ -31,7 +31,7 @@ def train():
     env_vec = VecMonitor(env_vec, "logs/PPO_0")
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
     # TODO what are right paramters
-    model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS, batch_size=2048, n_epochs=100)
+    model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS, batch_size=2048,)
     # model = ALGO.load("models/PPO/4472832", env=env_vec)
     iters = 0
     while True:
