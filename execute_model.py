@@ -3,19 +3,32 @@ import time
 import gym
 import numpy as np
 from stable_baselines3 import PPO , DDPG ,SAC
-from SubGoalEnv2 import SubGoalEnv, scale_action_to_env_pos
-from helper import pretty_obs
+from stable_baselines3.common.vec_env import SubprocVecEnv
+
+from SubGoalEnv2 import SubGoalEnv, scale_action_to_env_pos, pretty_obs
 ALGO = PPO
 
 models_dir = "models/PPO"
 
-env = SubGoalEnv("pick-place-v2", render_subactions=True)
+env = SubGoalEnv("pick-place-v2", render_subactions=False)
 # env = Monitor(env, './video', video_callable=lambda episode_id: True, force=True)
-env.reset()
+env = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             ])
 
-model_path = f"{models_dir}/2605056.zip"
+model_path = f"{models_dir}/11796480.zip"
 model = ALGO.load(model_path, env=env)
-episodes = 1000
+episodes = 50
 mean_rew_all_tasks = 0
 
 mean_steps = 0
@@ -31,7 +44,7 @@ for ep in range(episodes):
         print("action:", action)
         print("intended subgoal:", scale_action_to_env_pos(action))
         obs, reward, done, info = env.step(action)
-        print("obs after action:",pretty_obs(obs))
+        print("obs after action:", pretty_obs(obs))
         obj = pretty_obs(obs)['first_obj']
         distance_to_subgoal = np.linalg.norm(obs[:3] - obj[:3])
         print("distance to object:", distance_to_subgoal)

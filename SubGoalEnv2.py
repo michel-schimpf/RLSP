@@ -59,7 +59,7 @@ def pretty_obs(obs):
 # Todo: maybe take gym.env?
 class SubGoalEnv(gym.Env):
 
-    def __init__(self, env="reach-v2", multi_task=0, render_subactions=False):
+    def __init__(self, env="reach-v2", render_subactions=False):
         # set enviroment: todo: do it adjustable
         self.env_name = env
         mt1 = metaworld.MT1(env)  # Construct the benchmark, sampling tasks
