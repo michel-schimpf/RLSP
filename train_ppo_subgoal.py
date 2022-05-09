@@ -1,3 +1,4 @@
+
 import gym
 # from gym.wrappers import Monitor
 from stable_baselines3 import PPO
@@ -16,24 +17,24 @@ def train():
     TIMESTEPS = 512
     env = SubGoalEnv("pick-place-v2")
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
                              ])
     env_vec = VecMonitor(env_vec, "logs/PPO_0")
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
     # TODO what are right paramters
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS, batch_size=2048,)
-    # model = ALGO.load("models/PPO/4472832", env=env_vec)
-    iters = 0
+    model = ALGO.load("models/PPO/3317760.zip", env=env_vec)
+    iters = 136
     while True:
         print(iters)
         iters += 1
@@ -44,5 +45,4 @@ def train():
 
 if __name__ == '__main__':
     train()
-
 
