@@ -8,26 +8,26 @@ from stable_baselines3.common.vec_env import SubprocVecEnv
 from SubGoalEnv2 import SubGoalEnv, scale_action_to_env_pos, pretty_obs
 ALGO = PPO
 
-models_dir = "models/PPO"
+models_dir = "models/cloud_models"
 
 env = SubGoalEnv("pick-place-v2", render_subactions=False)
 # env = Monitor(env, './video', video_callable=lambda episode_id: True, force=True)
-env = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         lambda: env, lambda: env, lambda: env, lambda: env,
-                         ])
-model_path = f"{models_dir}/3244032.zip"
+# env = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          # lambda: env, lambda: env, lambda: env, lambda: env,
+#                          ])
+model_path = f"{models_dir}/6684672.zip"
 model = ALGO.load(model_path, env=env)
-episodes = 100
+episodes = 500
 mean_rew_all_tasks = 0
 
 mean_steps = 0
@@ -52,9 +52,9 @@ for ep in range(episodes):
         steps += 1
         total_reward += reward
     #     print()
-    # print("total reward:",total_reward)
+    print("total reward:",total_reward)
     # print("mean reward:",total_reward/steps)
-    # print("finished after: ", steps, " steps \n")
+    print("finished after: ", steps, " steps \n")
     mean_rew_all_tasks += total_reward
     mean_steps += steps
 print("mean_tot_rew:",mean_rew_all_tasks/episodes)
