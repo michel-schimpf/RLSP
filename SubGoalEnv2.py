@@ -180,8 +180,6 @@ class SubGoalEnv(gym.Env):
             obs, reward, done, info = self.env.step([0, 0, 0, 0])
             reward, done = self._calculate_reward(reward, info, obs, actiontype)
             self.number_steps += 1
-
-
             if self.number_steps >= self._max_episode_length:
                 info["TimeLimit.truncated"] = not done
                 done = True
@@ -202,7 +200,7 @@ class SubGoalEnv(gym.Env):
 
         # if it did not reach completly do again
         # TODO: make smarter
-        max_it = 5
+        max_it = 3
         while np.linalg.norm(self.env.tcp_center - sub_goal_pos) > 0.0005:
             sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos,
                                 gripper_closed=gripper_closed)

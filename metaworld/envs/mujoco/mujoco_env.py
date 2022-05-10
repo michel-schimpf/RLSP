@@ -37,7 +37,7 @@ class MujocoEnv(gym.Env, abc.ABC):
      - Do not automatically set the observation/action space.
     """
 
-    max_path_length = 50000 # changed
+    max_path_length = 500000 # changed
 
     def __init__(self, model_path, frame_skip):
         if not path.exists(model_path):
