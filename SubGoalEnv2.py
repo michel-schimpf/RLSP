@@ -185,10 +185,10 @@ class SubGoalEnv(gym.Env):
             if self.number_steps >= self._max_episode_length:
                 info["TimeLimit.truncated"] = not done
                 done = True
-            self.episode_rew += reward
-            if done:
-                print("task:", self.cur_task_index, " episode rew:", self.episode_rew)
-                self.episode_rew = 0
+            # self.episode_rew += reward
+            # if done:
+            #     print("task:", self.cur_task_index, " episode rew:", self.episode_rew)
+            #     self.episode_rew = 0
             return obs, reward, done, info
 
         if actiontype == 1:
@@ -201,6 +201,7 @@ class SubGoalEnv(gym.Env):
                     time.sleep(0.05)
 
         # if it did not reach completly do again
+        # TODO: make smarter
         max_it = 5
         while np.linalg.norm(self.env.tcp_center - sub_goal_pos) > 0.0005:
             sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos,
@@ -213,7 +214,7 @@ class SubGoalEnv(gym.Env):
                     time.sleep(0.05)
             max_it -= 1
             if max_it == 0:
-                print("break")
+                # print("break")
                 break
         # do picking or droping depending on action type:
         # distance_to_subgoal = np.linalg.norm(self.env.tcp_center - sub_goal_pos)
@@ -242,11 +243,11 @@ class SubGoalEnv(gym.Env):
                     time.sleep(0.05)
         # calculate reward
         reward, done = self._calculate_reward(reward, info, obs, actiontype)
-        self.number_steps += 1
-        if self.number_steps >= self._max_episode_length:
-            info["TimeLimit.truncated"] = not done
-            done = True
-        self.episode_rew += reward
+        # self.number_steps += 1
+        # if self.number_steps >= self._max_episode_length:
+        #     info["TimeLimit.truncated"] = not done
+        #     done = True
+        # self.episode_rew += reward
         if done:
             print("task:",self.cur_task_index, " episode rew:", self.episode_rew)
             self.episode_rew = 0
