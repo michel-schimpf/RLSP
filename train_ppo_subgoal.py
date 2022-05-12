@@ -3,7 +3,7 @@ import gym
 from stable_baselines3 import PPO
 import os
 import numpy as np
-from SubGoalEnv2 import SubGoalEnv
+from SubGoalEnv_for_1_nsubstep import SubGoalEnv
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.vec_env import VecMonitor
 
