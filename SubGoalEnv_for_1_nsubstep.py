@@ -168,10 +168,6 @@ class SubGoalEnv(gym.Env):
         # transform action into cordinates
         sub_goal_pos = scale_action_to_env_pos(action)
 
-        # first reach above object so gripper does not collide
-        # if actiontype == 1:
-        #     sub_goal_pos[2] += 0.04
-
         # find trajectory to reach coordinates
         # use tcp_center because its more accurat then obs
         sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos, gripper_closed=gripper_closed)
@@ -183,60 +179,35 @@ class SubGoalEnv(gym.Env):
             if self.number_steps >= self._max_episode_length:
                 info["TimeLimit.truncated"] = not done
                 done = True
-            # self.episode_rew += reward
-            # if done:
-            #     print("task:", self.cur_task_index, " episode rew:", self.episode_rew)
-            #     self.episode_rew = 0
             return obs, reward, done, info
 
         if actiontype == 1:
             # open gripper if picking
-            for i in range(10):
+            for i in range(15):
                 obs, reward, done, info = self.env.step([0, 0, 0, -1])
                 if self.render_subactions:
-                    # print("render")
                     self.env.render()
                     time.sleep(0.05)
 
         # if it did not reach completly do again
         # TODO: make smarter
-        max_it = 5
+        max_it = 3
         while np.linalg.norm(self.env.tcp_center - sub_goal_pos) > 0.0005:
             sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos,
                                 gripper_closed=gripper_closed)
             for a in sub_actions:
                 obs, reward, done, info = self.env.step(a)
                 if self.render_subactions:
-                    # print("---i:",info)
                     self.env.render()
                     time.sleep(0.05)
             max_it -= 1
             if max_it == 0:
-                # print("break")
                 break
         # do picking or droping depending on action type:
-        # distance_to_subgoal = np.linalg.norm(self.env.tcp_center - sub_goal_pos)
-        # print("--distance to subgoal:", distance_to_subgoal)
         if actiontype == 1:
-            # # do one action to go lowe
-            # max_it = 5
-            # sub_goal_pos[2] -= 0.045
-            # while np.linalg.norm(self.env.tcp_center - sub_goal_pos) > 0.0005:
-            #     sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos,
-            #                         gripper_closed=gripper_closed)
-            #     for a in sub_actions:
-            #         obs, reward, done, info = self.env.step(a)
-            #         if self.render_subactions:
-            #             # print("---i:",info)
-            #             self.env.render()
-            #             time.sleep(0.05)
-            #     max_it -= 1
-            #     if max_it == 0:
-            #         break
-            for i in range(20):
+            for i in range(15):
                 obs, reward, done, info = self.env.step([0,0, 0,1])
                 if self.render_subactions:
-                    # print("render")
                     self.env.render()
                     time.sleep(0.05)
         # calculate reward
@@ -245,8 +216,4 @@ class SubGoalEnv(gym.Env):
         if self.number_steps >= self._max_episode_length:
             info["TimeLimit.truncated"] = not done
             done = True
-        # self.episode_rew += reward
-        # if done:
-        #     print("task:",self.cur_task_index, " episode rew:", self.episode_rew)
-        #     self.episode_rew = 0
         return obs, reward, done, info

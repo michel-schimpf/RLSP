@@ -159,8 +159,9 @@ class FindTrajectory:
                 action.append(1)
             else:
                 action.append(-1)
-            actions.append([round(i, 2) for i in action])
-            # print([round(i, 6) for i in action])
+            #Todo: what is that rounding?
+            # actions.append([round(i, 2) for i in action])
+            actions.append(action)
         return actions
 
     def a_star_search(self):

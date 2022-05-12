@@ -1,9 +1,5 @@
-import gym
-from gym.wrappers import Monitor
 from stable_baselines3 import SAC
-import os
-import numpy as np
-from SubGoalEnv import SubGoalEnv
+from SubGoalEnv08042022 import SubGoalEnv
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.vec_env import VecMonitor
 

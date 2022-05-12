@@ -1,9 +1,4 @@
-import gym
-from gym.wrappers import Monitor
 from stable_baselines3 import PPO
-import os
-import numpy as np
-from SubGoalEnv import SubGoalEnv
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.vec_env import VecMonitor
 from NormalStepEnv import NormalStepEnv

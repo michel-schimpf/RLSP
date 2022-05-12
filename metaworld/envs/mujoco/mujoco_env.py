@@ -46,7 +46,7 @@ class MujocoEnv(gym.Env, abc.ABC):
         self.frame_skip = frame_skip
         self.model = mujoco_py.load_model_from_path(model_path)
         # TODO: find good number of substeps
-        self.sim = mujoco_py.MjSim(self.model, nsubsteps=4)  # changed
+        self.sim = mujoco_py.MjSim(self.model, nsubsteps=1)  # changed
         self.data = self.sim.data
         self.viewer = None
         self._viewers = {}

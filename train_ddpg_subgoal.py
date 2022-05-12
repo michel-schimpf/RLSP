@@ -1,7 +1,7 @@
 from stable_baselines3 import TD3
 import numpy as np
 import os
-from SubGoalEnv import SubGoalEnv
+from SubGoalEnv08042022 import SubGoalEnv
 from stable_baselines3.common.noise import NormalActionNoise
 
 models_dir = "models/TD3"

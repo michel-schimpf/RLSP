@@ -244,7 +244,7 @@ class SubGoalEnv(gym.Env):
         # print("--distance to subgoal:", distance_to_subgoal)
         if actiontype == 1:
             # # do one action to go lowe
-            max_it = 5
+            max_it = 10
             sub_goal_pos[2] -= 0.045
             while np.linalg.norm(self.env.tcp_center - sub_goal_pos) > 0.005:
                 sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos,

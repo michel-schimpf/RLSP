@@ -1,4 +1,5 @@
 /models/PPO/*
 /models/SAC/*
+/models/cloud_models/*
 /logs/PPO_0/*
 /logs/SAC_0/*

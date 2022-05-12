@@ -10,7 +10,7 @@ ALGO = PPO
 
 models_dir = "models/cloud_models"
 
-env = SubGoalEnv("pick-place-v2", render_subactions=False)
+env = SubGoalEnv("pick-place-v2", render_subactions=True)
 # env = Monitor(env, './video', video_callable=lambda episode_id: True, force=True)
 # env = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
 #                          # lambda: env, lambda: env, lambda: env, lambda: env,
@@ -25,9 +25,9 @@ env = SubGoalEnv("pick-place-v2", render_subactions=False)
 #                          # lambda: env, lambda: env, lambda: env, lambda: env,
 #                          # lambda: env, lambda: env, lambda: env, lambda: env,
 #                          ])
-model_path = f"{models_dir}/6684672.zip"
+model_path = f"{models_dir}/4423680.zip"
 model = ALGO.load(model_path, env=env)
-episodes = 500
+episodes = 100
 mean_rew_all_tasks = 0
 
 mean_steps = 0
@@ -38,7 +38,8 @@ for ep in range(episodes):
     steps = 0
     total_reward = 0
     while not done:
-        action, _states = model.predict(obs)
+
+        action, _states = model.predict(obs,deterministic=True)
         # print("obs:", pretty_obs(obs))
         # print("action:", action)
         # print("intended subgoal:", scale_action_to_env_pos(action))

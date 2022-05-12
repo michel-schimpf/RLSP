@@ -1,6 +1,6 @@
 # from stable_baselines3.common.callbacks import EvalCallback
 # from ppo_reach import mtppo_metaworld_mt1_reach, try_subgoal_env, trpo_point
-from SubGoalEnv import SubGoalEnv
+from SubGoalEnv08042022 import SubGoalEnv
 
 from stable_baselines3 import PPO
 
