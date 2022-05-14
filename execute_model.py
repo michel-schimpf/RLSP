@@ -5,12 +5,12 @@ import numpy as np
 from stable_baselines3 import PPO , DDPG ,SAC
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
-from SubGoalEnv2 import SubGoalEnv, scale_action_to_env_pos, pretty_obs
+from SubGoalEnv_for_1_nsubstep import SubGoalEnv, scale_action_to_env_pos, pretty_obs
 ALGO = PPO
 
 models_dir = "models/cloud_models"
 
-env = SubGoalEnv("pick-place-v2", render_subactions=True)
+env = SubGoalEnv("pick-place-v2", render_subactions=False)
 # env = Monitor(env, './video', video_callable=lambda episode_id: True, force=True)
 # env = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
 #                          # lambda: env, lambda: env, lambda: env, lambda: env,
@@ -25,11 +25,11 @@ env = SubGoalEnv("pick-place-v2", render_subactions=True)
 #                          # lambda: env, lambda: env, lambda: env, lambda: env,
 #                          # lambda: env, lambda: env, lambda: env, lambda: env,
 #                          ])
-model_path = f"{models_dir}/4423680.zip"
+model_path = f"{models_dir}/18137088.zip"
 model = ALGO.load(model_path, env=env)
 episodes = 100
 mean_rew_all_tasks = 0
-
+num_success = 0
 mean_steps = 0
 for ep in range(episodes):
     print("\n---------\nepisode:", ep)
@@ -49,10 +49,12 @@ for ep in range(episodes):
         # distance_to_subgoal = np.linalg.norm(obs[:3] - obj[:3])
         # print("distance to object:", distance_to_subgoal)
         # print("info",info)
-        # print("reward:", reward)
+        print("reward:", reward)
         steps += 1
         total_reward += reward
     #     print()
+    if info['success']:
+        num_success += 1
     print("total reward:",total_reward)
     # print("mean reward:",total_reward/steps)
     print("finished after: ", steps, " steps \n")
@@ -60,4 +62,5 @@ for ep in range(episodes):
     mean_steps += steps
 print("mean_tot_rew:",mean_rew_all_tasks/episodes)
 print("mean_steps:", mean_steps/episodes)
+print("success rate:",num_success/episodes)
 
