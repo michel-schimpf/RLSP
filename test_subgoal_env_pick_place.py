@@ -1,5 +1,5 @@
 from SubGoalEnv import SubGoalEnv, scale_env_pos_to_action, pretty_obs
-env = SubGoalEnv("pick-place-v2", render_subactions=True, env_rew=True)
+env = SubGoalEnv("pick-place-v2", render_subactions=False, env_rew=True)
 obs = env.reset()
 total_reach = 0
 for i in range(50):
