@@ -49,8 +49,9 @@ def pretty_obs(obs):
 
 class SubGoalEnv(gym.Env):
 
-    def __init__(self, env="reach-v2", render_subactions=False):
+    def __init__(self, env="reach-v2", render_subactions=False, env_rew=True):
         # set enviroment: todo: do it adjustable
+        self.env_rew = env_rew
         self.env_name = env
         mt1 = metaworld.MT1(env)  # Construct the benchmark, sampling tasks
         env = mt1.train_classes[env]()  # Create an environment with task `pick_place`
@@ -94,6 +95,8 @@ class SubGoalEnv(gym.Env):
     def _calculate_reward(self, re, info: Dict[str, bool], obs: [float], actiontype ) -> (int, bool):
         reward = -2
         done = False
+        if self.env_rew:
+            return re, done
         if self.env_name == "reach-v2":
             reward = -1
             if 'success' in info and info['success']:

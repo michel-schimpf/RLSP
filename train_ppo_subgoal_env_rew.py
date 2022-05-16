@@ -1,9 +1,6 @@
-import gym
 # from gym.wrappers import Monitor
 from stable_baselines3 import PPO
-import os
-import numpy as np
-from SubGoalEnv_for_1_nsubstep import SubGoalEnv
+from SubGoalEnv import SubGoalEnv
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.vec_env import VecMonitor
 
@@ -14,7 +11,7 @@ def train():
     models_dir = f"models/{algo}"
     logdir = "logs"
     TIMESTEPS = 512
-    env = SubGoalEnv("pick-place-v2")
+    env = SubGoalEnv("pick-place-v2", env_rew=True)
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
@@ -28,10 +25,10 @@ def train():
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              ])
-    env_vec = VecMonitor(env_vec, "logs/PPO_0")
+    env_vec = VecMonitor(env_vec, "logs/PPO_2")
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
     # TODO what are right paramters
-    model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS, batch_size=3072,)
+    model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS, batch_size=4096,)
     # model = ALGO.load("models/PPO/3514368.zip", env=env_vec)
     iters = 0
     while True:

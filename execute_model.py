@@ -1,11 +1,7 @@
-import time
 # from helper import pretty_obs_subgoal
-import gym
-import numpy as np
-from stable_baselines3 import PPO , DDPG ,SAC
-from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3 import PPO
 
-from SubGoalEnv_for_1_nsubstep import SubGoalEnv, scale_action_to_env_pos, pretty_obs
+from SubGoalEnv_for_1_nsubstep_16_05_22 import SubGoalEnv, pretty_obs
 ALGO = PPO
 
 models_dir = "models/cloud_models"
@@ -25,9 +21,9 @@ env = SubGoalEnv("pick-place-v2", render_subactions=False)
 #                          # lambda: env, lambda: env, lambda: env, lambda: env,
 #                          # lambda: env, lambda: env, lambda: env, lambda: env,
 #                          ])
-model_path = f"{models_dir}/18137088.zip"
+model_path = f"{models_dir}/24993792.zip"
 model = ALGO.load(model_path, env=env)
-episodes = 100
+episodes = 300
 mean_rew_all_tasks = 0
 num_success = 0
 mean_steps = 0
