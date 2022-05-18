@@ -19,11 +19,11 @@ def train():
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, #lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
                              ])
     env_vec = RLPPAMonitor(env_vec, "logs/PPO_2")
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
@@ -36,7 +36,7 @@ def train():
         iters += 1
         model = model.learn(total_timesteps=TIMESTEPS, reset_num_timesteps=False,
                     tb_log_name=algo,)
-        model.save(f"{models_dir}/{TIMESTEPS * iters*48}")
+        model.save(f"{models_dir}/{TIMESTEPS * iters*31}")
 
 
 if __name__ == '__main__':
