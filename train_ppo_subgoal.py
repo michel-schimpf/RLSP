@@ -13,17 +13,17 @@ def train():
     TIMESTEPS = 512
     env = SubGoalEnv("pick-place-v2")
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             # lambda: env, lambda: env, lambda: env, lambda: env,
                              ])
     env_vec = VecMonitor(env_vec, "logs/PPO_0")
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
