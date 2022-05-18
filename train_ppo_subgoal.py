@@ -22,18 +22,18 @@ def train():
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
-                             lambda: env, lambda: env, lambda: env,  # lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
-                             # lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env,   lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
+                             lambda: env, lambda: env, lambda: env, lambda: env,
                              ])
     env_vec = RLPPAMonitor(env_vec, "logs2/PPO", ("success",))
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
     # TODO what are right paramters
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS,
                  batch_size=5000, n_epochs=4000)
-    model = ALGO.load("models/PPO/15360000.zip", env=env_vec,tensorboard_log=logdir)
+    model = ALGO.load("models/PPO3/15360000.zip", env=env_vec,tensorboard_log=logdir)
     iters = 625
     while True:
             print(iters)
