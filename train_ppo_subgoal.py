@@ -13,7 +13,7 @@ def train():
     ALGO = PPO
     models_dir = f"models/{algo}"
     logdir = "logs"
-    TIMESTEPS = 2048
+    TIMESTEPS = 1024
     env = SubGoalEnv("pick-place-v2", env_rew=True)
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
@@ -32,7 +32,7 @@ def train():
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
     # TODO what are right paramters
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS,
-                 batch_size=4096, learning_rate=1e-4)
+                 batch_size=4096, learning_rate=3e-4)
     # model = ALGO.load("models/PPO3/15360000.zip", env=env_vec,tensorboard_log=logdir)
     iters = 0
     while True:
