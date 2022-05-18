@@ -3,7 +3,7 @@ from stable_baselines3 import PPO
 from SubGoalEnv import SubGoalEnv
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.vec_env import VecMonitor
-
+from RL_PPA_monitor import RLPPAMonitor
 
 def train():
     algo = "PPO"
@@ -25,7 +25,7 @@ def train():
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              ])
-    env_vec = VecMonitor(env_vec, "logs/PPO_2")
+    env_vec = RLPPAMonitor(env_vec, "logs/PPO_2")
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
     # TODO what are right paramters
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS, batch_size=4096,)
