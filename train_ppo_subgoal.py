@@ -11,8 +11,8 @@ from RL_PPA_monitor import RLPPAMonitor
 def train():
     algo = "PPO"
     ALGO = PPO
-    models_dir = f"models/{algo}"
-    logdir = "logs"
+    models_dir = f"models/{algo}3"
+    logdir = "logs2"
     TIMESTEPS = 512
     env = SubGoalEnv("pick-place-v2", env_rew=True)
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
@@ -28,13 +28,13 @@ def train():
                              # lambda: env, lambda: env, lambda: env, lambda: env,
                              # lambda: env, lambda: env, lambda: env, lambda: env,
                              ])
-    env_vec = RLPPAMonitor(env_vec, "logs/PPO_0", ("success",))
+    env_vec = RLPPAMonitor(env_vec, "logs2/PPO", ("success",))
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
     # TODO what are right paramters
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS,
                  batch_size=5000, n_epochs=4000)
-    model = ALGO.load("models/PPO/952320.zip", env=env_vec)
-    iters = 61
+    model = ALGO.load("models/PPO/15360000.zip", env=env_vec,tensorboard_log=logdir)
+    iters = 625
     while True:
             print(iters)
             iters += 1
