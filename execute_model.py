@@ -1,7 +1,7 @@
 # from helper import pretty_obs_subgoal
 from stable_baselines3 import PPO
 
-from SubGoalEnv_for_1_nsubstep_16_05_22 import SubGoalEnv, pretty_obs
+from SubGoalEnv import SubGoalEnv, pretty_obs
 ALGO = PPO
 
 models_dir = "models/cloud_models"
@@ -21,7 +21,7 @@ env = SubGoalEnv("pick-place-v2", render_subactions=False)
 #                          # lambda: env, lambda: env, lambda: env, lambda: env,
 #                          # lambda: env, lambda: env, lambda: env, lambda: env,
 #                          ])
-model_path = f"{models_dir}/24993792.zip"
+model_path = f"{models_dir}/10936320.zip"
 model = ALGO.load(model_path, env=env)
 episodes = 300
 mean_rew_all_tasks = 0
@@ -48,9 +48,10 @@ for ep in range(episodes):
         print("reward:", reward)
         steps += 1
         total_reward += reward
+        if info['success']:
+            num_success += 1
+            break
     #     print()
-    if info['success']:
-        num_success += 1
     print("total reward:",total_reward)
     # print("mean reward:",total_reward/steps)
     print("finished after: ", steps, " steps \n")
