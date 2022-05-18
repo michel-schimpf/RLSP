@@ -32,7 +32,7 @@ def train():
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
     # TODO what are right paramters
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS,
-                 batch_size=5120, learning_rate=3e-5)
+                 batch_size=4096, learning_rate=1e-4)
     # model = ALGO.load("models/PPO3/15360000.zip", env=env_vec,tensorboard_log=logdir)
     iters = 0
     while True:
