@@ -13,7 +13,7 @@ def train():
     ALGO = PPO
     models_dir = f"models/{algo}"
     logdir = "logs"
-    TIMESTEPS = 2048
+    TIMESTEPS = 1024
     env = SubGoalEnv("pick-place-v2", env_rew=True)
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
