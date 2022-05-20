@@ -1,5 +1,5 @@
 from SubGoalEnv import SubGoalEnv, scale_env_pos_to_action, pretty_obs
-env = SubGoalEnv("pick-place-v2", render_subactions=False, env_rew=True)
+env = SubGoalEnv("pick-place-v2", render_subactions=True, rew_type="rew1")
 obs = env.reset()
 total_reach = 0
 for i in range(50):
@@ -27,6 +27,17 @@ for i in range(50):
     # print("info", i1)
     # print("----------------------\nTest pick random actions:\n----------------------")
     # print(obs)
+    goal = pretty_obs(obs)['first_obj']
+    # print("first_obj:", goal)
+    action_to_reach_goal = scale_env_pos_to_action(goal)
+    action_to_reach_goal.append(1)
+    action_to_reach_goal[0] -= 0.07
+    # print("action:", action_to_reach_goal)
+    obs, r, d, i1 = env.step(action_to_reach_goal)
+    print(i1)
+    print("reward:", r)
+    total_reward += r
+
     goal = pretty_obs(obs)['first_obj']
     # print("first_obj:", goal)
     action_to_reach_goal = scale_env_pos_to_action(goal)
@@ -105,6 +116,7 @@ for i in range(50):
     if i2['success']:
         print("reached with:", action_to_reach_goal)
         total_reach += 1
+        print()
         continue
     else:
         print("not reached with:", action_to_reach_goal)
