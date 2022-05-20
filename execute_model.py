@@ -4,7 +4,7 @@ from stable_baselines3 import PPO
 from SubGoalEnv import SubGoalEnv, pretty_obs
 ALGO = PPO
 
-models_dir = "models/cloud_models"
+models_dir = "models/PPO"
 
 env = SubGoalEnv("pick-place-v2", render_subactions=False)
 
