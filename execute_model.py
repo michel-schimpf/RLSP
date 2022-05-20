@@ -7,21 +7,8 @@ ALGO = PPO
 models_dir = "models/cloud_models"
 
 env = SubGoalEnv("pick-place-v2", render_subactions=False)
-# env = Monitor(env, './video', video_callable=lambda episode_id: True, force=True)
-# env = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          # lambda: env, lambda: env, lambda: env, lambda: env,
-#                          ])
-model_path = f"{models_dir}/10936320.zip"
+
+model_path = f"{models_dir}/10158080.zip"
 model = ALGO.load(model_path, env=env)
 episodes = 300
 mean_rew_all_tasks = 0
