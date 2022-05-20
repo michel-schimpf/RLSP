@@ -1,7 +1,7 @@
 # from helper import pretty_obs_subgoal
 from stable_baselines3 import PPO
 
-from SubGoalEnv import SubGoalEnv, pretty_obs
+from SubGoalEnv import SubGoalEnv, pretty_obs,scale_action_to_env_pos
 ALGO = PPO
 
 models_dir = "models/PPO"
@@ -23,10 +23,10 @@ for ep in range(episodes):
     success = False
     while not done:
 
-        action, _states = model.predict(obs,deterministic=True)
-        # print("obs:", pretty_obs(obs))
+        action, _states = model.predict(obs, deterministic=True)
+        print("obs:", pretty_obs(obs))
         print("action:", action)
-        # print("intended subgoal:", scale_action_to_env_pos(action))
+        print("intended subgoal:", scale_action_to_env_pos(action))
         obs, reward, done, info = env.step(action)
         # print("obs after action:", pretty_obs(obs))
         obj = pretty_obs(obs)['first_obj']
