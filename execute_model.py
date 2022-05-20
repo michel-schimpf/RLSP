@@ -24,7 +24,7 @@ for ep in range(episodes):
 
         action, _states = model.predict(obs,deterministic=True)
         # print("obs:", pretty_obs(obs))
-        # print("action:", action)
+        print("action:", action)
         # print("intended subgoal:", scale_action_to_env_pos(action))
         obs, reward, done, info = env.step(action)
         # print("obs after action:", pretty_obs(obs))
