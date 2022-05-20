@@ -24,7 +24,6 @@ for ep in range(episodes):
     while not done:
 
         action, _states = model.predict(obs, deterministic=True)
-        print("obs:", pretty_obs(obs))
         print("action:", action)
         print("intended subgoal:", scale_action_to_env_pos(action))
         obs, reward, done, info = env.step(action)
@@ -32,7 +31,7 @@ for ep in range(episodes):
         obj = pretty_obs(obs)['first_obj']
         # distance_to_subgoal = np.linalg.norm(obs[:3] - obj[:3])
         # print("distance to object:", distance_to_subgoal)
-        # print("info",info)
+        print("info",info)
         print("reward:", reward)
         steps += 1
         total_reward += reward
