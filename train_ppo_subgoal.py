@@ -14,7 +14,7 @@ def train():
     models_dir = f"models/{algo}"
     logdir = "logs"
     TIMESTEPS = 2048
-    env = SubGoalEnv("pick-place-v2", env_rew=True)
+    env = SubGoalEnv("pick-place-v2", rew_type="rew1")
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,

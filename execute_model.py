@@ -4,11 +4,11 @@ from stable_baselines3 import PPO
 from SubGoalEnv import SubGoalEnv, pretty_obs,scale_action_to_env_pos
 ALGO = PPO
 
-models_dir = "models/PPO"
+models_dir = "models/cloud_models"
 
-env = SubGoalEnv("pick-place-v2", render_subactions=False)
+env = SubGoalEnv("pick-place-v2", render_subactions=True)
 
-model_path = f"{models_dir}/12507136.zip"
+model_path = f"{models_dir}/10158080"
 model = ALGO.load(model_path, env=env)
 episodes = 100
 mean_rew_all_tasks = 0
@@ -27,7 +27,7 @@ for ep in range(episodes):
         print("action:", action)
         print("intended subgoal:", scale_action_to_env_pos(action))
         obs, reward, done, info = env.step(action)
-        print("gripper pos",pretty_obs(obs)["gripper_pos"])
+        # print("gripper pos",pretty_obs(obs)["gripper"])
         print("goal:", pretty_obs(obs)["goal"])
         obj = pretty_obs(obs)['first_obj']
         # distance_to_subgoal = np.linalg.norm(obs[:3] - obj[:3])
