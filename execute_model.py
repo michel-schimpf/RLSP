@@ -27,6 +27,7 @@ for ep in range(episodes):
         print("action:", action)
         print("intended subgoal:", scale_action_to_env_pos(action))
         obs, reward, done, info = env.step(action)
+        print("gripper pos",pretty_obs(obs)["gripper_pos"])
         print("goal:", pretty_obs(obs)["goal"])
         obj = pretty_obs(obs)['first_obj']
         # distance_to_subgoal = np.linalg.norm(obs[:3] - obj[:3])
