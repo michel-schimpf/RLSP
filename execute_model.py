@@ -37,7 +37,6 @@ for ep in range(episodes):
         total_reward += reward
         if info['success']:
             num_success += 1
-            break
     #     print()
     print("total reward:",total_reward)
     # print("mean reward:",total_reward/steps)
