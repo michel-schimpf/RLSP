@@ -20,6 +20,7 @@ for ep in range(episodes):
     done = False
     steps = 0
     total_reward = 0
+    success = False
     while not done:
 
         action, _states = model.predict(obs,deterministic=True)
@@ -36,8 +37,10 @@ for ep in range(episodes):
         steps += 1
         total_reward += reward
         if info['success']:
-            num_success += 1
+            success = True
     #     print()
+        if done and success:
+            num_success += 1
     print("total reward:",total_reward)
     # print("mean reward:",total_reward/steps)
     print("finished after: ", steps, " steps \n")
