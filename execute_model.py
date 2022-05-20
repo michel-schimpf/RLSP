@@ -10,7 +10,7 @@ env = SubGoalEnv("pick-place-v2", render_subactions=False)
 
 model_path = f"{models_dir}/10158080.zip"
 model = ALGO.load(model_path, env=env)
-episodes = 300
+episodes = 100
 mean_rew_all_tasks = 0
 num_success = 0
 mean_steps = 0
