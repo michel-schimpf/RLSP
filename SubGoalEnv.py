@@ -11,9 +11,10 @@ from metaworld.envs import reward_utils
 
 
 # Todo: add types
-ENV_DIMENSION = [(-0.37, 0.27), (0.40, 0.91), (0.0, 0.31)]
+ENV_DIMENSION = [(-0.37, 0.31), (0.40, 0.91), (0.0, 0.31)]
 # for pick_place: minimum = [(-0.15, 0.15), (0.58, 0.91), (0.0, 0.31)]
 # with peg_insert: [(-0.36, 0.26), (0.39, 0.91), (0.0, 0.31)]
+# with door close [(-0.37, 0.31), (0.40, 0.91), (0.0, 0.31)]
 
 def scale_action_to_env_pos(action):
     action = np.clip(action, -1, 1)
