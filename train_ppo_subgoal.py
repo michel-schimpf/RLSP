@@ -32,7 +32,7 @@ def train():
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              ])
-    env_vec = RLPPAMonitor(env_vec, "logs/PPO", ("success",))
+    env_vec = RLPPAMonitor(env_vec, "logs/PPO_0)", ("success",))
     # right batch_size: https://github.com/llSourcell/Unity_ML_Agents/blob/master/docs/best-practices-ppo.md
     # TODO what are right paramters
     model = ALGO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=TIMESTEPS,

@@ -6,9 +6,9 @@ ALGO = PPO
 
 models_dir = "models/cloud_models"
 
-env = SubGoalEnv("pick-place-v2", render_subactions=True,rew_type="rew1")
+env = SubGoalEnv("peg-insert-side-v2", render_subactions=True,rew_type="rew1")
 
-model_path = f"{models_dir}/22982656"
+model_path = f"{models_dir}/5505024.zip"
 model = ALGO.load(model_path, env=env)
 episodes = 100
 mean_rew_all_tasks = 0

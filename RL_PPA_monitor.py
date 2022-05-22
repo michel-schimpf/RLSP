@@ -3,10 +3,10 @@ import warnings
 from typing import Optional, Tuple
 
 import numpy as np
-
+from SubGoalEnv import pretty_obs
 from stable_baselines3.common.vec_env.base_vec_env import VecEnv, VecEnvObs, VecEnvStepReturn, VecEnvWrapper
 
-
+# Compied from Vector Monitor and changed
 class RLPPAMonitor(VecEnvWrapper):
     """
     A vectorized monitor wrapper for *vectorized* Gym environments,
@@ -26,7 +26,9 @@ class RLPPAMonitor(VecEnvWrapper):
         venv: VecEnv,
         filename: Optional[str] = None,
         info_keywords: Tuple[str, ...] = (),
+        multi_env = False,
     ):
+        self.multi_env = multi_env
         # Avoid circular import
         from stable_baselines3.common.monitor import Monitor, ResultsWriter
 
@@ -82,7 +84,15 @@ class RLPPAMonitor(VecEnvWrapper):
                 info = infos[i].copy()
                 episode_return = self.episode_returns[i]
                 episode_length = self.episode_lengths[i]
-                episode_info = {"r": episode_return, "l": episode_length, "t": round(time.time() - self.t_start, 6)}
+                if self.multi_env:
+                    # print("obs",pretty_obs(obs[i]))
+                    task_id = onehot_to_task_id(pretty_obs(obs[i])["one_hot_task"])
+                    # print("task_id", task_id, " one_hot: ",pretty_obs(obs[i])["one_hot_task"])
+                    episode_info = {"r":episode_return, "l": episode_length,
+                                    "t": round(time.time() - self.t_start, 6), "taskid": task_id}
+                else :
+                    episode_info = {"r": episode_return, "l": episode_length,
+                                "t": round(time.time() - self.t_start, 6)}
                 # print(info)
                 for key in self.info_keywords:
                     episode_info[key] = info[key]
@@ -100,3 +110,10 @@ class RLPPAMonitor(VecEnvWrapper):
         if self.results_writer:
             self.results_writer.close()
         return self.venv.close()
+
+
+def onehot_to_task_id(nohup) ->int:
+    for i in range(len(nohup)):
+        if nohup[i] == 1:
+            return i
+    raise Exception("not a currect one-hot in: nohup_to_task_id")

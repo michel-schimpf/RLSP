@@ -11,33 +11,30 @@ from metaworld.envs import reward_utils
 
 
 # Todo: add types
-
+ENV_DIMENSION = [(-0.37, 0.27), (0.40, 0.91), (0.0, 0.31)]
+# for pick_place: minimum = [(-0.15, 0.15), (0.58, 0.91), (0.0, 0.31)]
+# with peg_insert: [(-0.36, 0.26), (0.39, 0.91), (0.0, 0.31)]
 
 def scale_action_to_env_pos(action):
     action = np.clip(action, -1, 1)
     action_dimension = [(-1, 1), (-1, 1), (-1, 1)]
-    env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.04604, 0.49672)]  # figured out by trying
-    env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.0, 0.49672)]  # add a bit of marging
-    env_dimension = [(-0.15, 0.15), (0.58, 0.91), (0.0, 0.31)]  # add a bit of marging
+    # add a bit of marging
     env_pos = []
     for i in range(3):
         action_range = (action_dimension[i][1] - action_dimension[i][0])
-        env_range = (env_dimension[i][1] - env_dimension[i][0])
-        env_pos.append((((action[i] - action_dimension[i][0]) * env_range) / action_range) + env_dimension[i][0])
+        env_range = (ENV_DIMENSION[i][1] - ENV_DIMENSION[i][0])
+        env_pos.append((((action[i] - action_dimension[i][0]) * env_range) / action_range) + ENV_DIMENSION[i][0])
     return env_pos
 
 
 def scale_env_pos_to_action(env_pos):
     action_dimension = [(-1, 1), (-1, 1), (-1, 1)]
-    env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.04604, 0.49672)]  # figured out by trying
-    env_dimension = [(-0.50118, 0.50118), (0.40008, 0.9227), (0.0, 0.49672)]  # add a bit of marging
-    # To make Env Smaller:
-    env_dimension = [(-0.15, 0.15), (0.58, 0.91), (0.0, 0.31)]  # add a bit of marging
+     # add a bit of marging
     action = []
     for i in range(3):
         action_range = (action_dimension[i][1] - action_dimension[i][0])
-        env_range = (env_dimension[i][1] - env_dimension[i][0])
-        action.append((((env_pos[i] - env_dimension[i][0]) * action_range) / env_range) + action_dimension[i][0])
+        env_range = (ENV_DIMENSION[i][1] - ENV_DIMENSION[i][0])
+        action.append((((env_pos[i] - ENV_DIMENSION[i][0]) * action_range) / env_range) + action_dimension[i][0])
     action = list(np.clip(action, -1, 1))
     return action
 
@@ -111,8 +108,7 @@ class SubGoalEnv(gym.Env):
         self.number_of_one_hot_tasks = number_of_one_hot_tasks
         self.one_hot_task_index = one_hot_task_index
 
-
-    def _add_one_hot_task_to_obs(self,obs) ->[float]:
+    def _add_one_hot_task_to_obs(self, obs) ->[float]:
         if self.number_of_one_hot_tasks <= 1:
             return obs
         one_hot = np.zeros(self.number_of_one_hot_tasks)
@@ -191,6 +187,8 @@ class SubGoalEnv(gym.Env):
         self.number_steps = 0
         self.cur_task_index += 1
         self.already_grasped = False
+        # print("one_hot_task_index: ",self.one_hot_task_index)
+        new_obs = self._add_one_hot_task_to_obs(obs)
         return self._add_one_hot_task_to_obs(obs)
 
     def step(self, action):

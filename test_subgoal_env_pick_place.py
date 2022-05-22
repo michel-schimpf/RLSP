@@ -1,5 +1,5 @@
 from SubGoalEnv import SubGoalEnv, scale_env_pos_to_action, pretty_obs
-env = SubGoalEnv("door-open-v2", render_subactions=True, rew_type="rew1")
+env = SubGoalEnv("peg-insert-side-v2", render_subactions=True, rew_type="rew1")
 obs = env.reset()
 total_reach = 0
 for i in range(50):
