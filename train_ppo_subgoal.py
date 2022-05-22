@@ -14,7 +14,7 @@ def train():
     models_dir = f"models/{algo}"
     logdir = "logs"
     TIMESTEPS = 2048
-    env = SubGoalEnv("pick-place-v2", rew_type="rew1")
+    env = SubGoalEnv("peg-insert-side-v2", rew_type="rew1")
     env_vec = SubprocVecEnv([lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
                              lambda: env, lambda: env, lambda: env, lambda: env,
@@ -44,7 +44,7 @@ def train():
             iters += 1
             model = model.learn(total_timesteps=TIMESTEPS, reset_num_timesteps=False,
                                 tb_log_name=algo, )
-            model.save(f"{models_dir}/{TIMESTEPS * iters * 31}")
+            model.save(f"{models_dir}/{TIMESTEPS * iters * 64}")
 
 
 if __name__ == '__main__':

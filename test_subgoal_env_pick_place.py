@@ -1,5 +1,5 @@
 from SubGoalEnv import SubGoalEnv, scale_env_pos_to_action, pretty_obs
-env = SubGoalEnv("pick-place-v2", render_subactions=True, rew_type="rew1")
+env = SubGoalEnv("door-open-v2", render_subactions=True, rew_type="rew1")
 obs = env.reset()
 total_reach = 0
 for i in range(50):
@@ -28,23 +28,13 @@ for i in range(50):
     # print("----------------------\nTest pick random actions:\n----------------------")
     # print(obs)
     goal = pretty_obs(obs)['first_obj']
-    # print("first_obj:", goal)
+    print("obs:",pretty_obs(obs))
     action_to_reach_goal = scale_env_pos_to_action(goal)
     action_to_reach_goal.append(1)
-    action_to_reach_goal[0] -= 0.07
+    # action_to_reach_goal[0] -= 0.07
     # print("action:", action_to_reach_goal)
     obs, r, d, i1 = env.step(action_to_reach_goal)
     print(i1)
-    print("reward:", r)
-    total_reward += r
-
-    goal = pretty_obs(obs)['first_obj']
-    # print("first_obj:", goal)
-    action_to_reach_goal = scale_env_pos_to_action(goal)
-    action_to_reach_goal.append(1)
-    action_to_reach_goal[0] -= 0.07
-    # print("action:", action_to_reach_goal)
-    obs, r, d, i1 = env.step(action_to_reach_goal)
     print("reward:", r)
     total_reward += r
     # print("info", i1)
@@ -110,6 +100,7 @@ for i in range(50):
     # print("action:", action_to_reach_goal)
     obs, r, d, i2 = env.step(action_to_reach_goal)
     total_reward += r
+    print(i2)
     print("reward:", r)
     # print(i2)
     print(total_reward)

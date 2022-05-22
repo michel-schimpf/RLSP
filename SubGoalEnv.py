@@ -44,12 +44,13 @@ def scale_env_pos_to_action(env_pos):
 
 def pretty_obs(obs):
     return {'gripper_pos': obs[0:4], 'first_obj': obs[4:11], 'second_obj': obs[11:18],
-            'goal': obs[36:39], 'last_measurements': obs[18:36]}
+            'goal': obs[36:39], 'last_measurements': obs[18:36], "one_hot_task": obs [39:]}
 
 
 class SubGoalEnv(gym.Env):
 
-    def __init__(self, env="reach-v2", render_subactions=False, rew_type="meta_world_rew"):
+    def __init__(self, env="reach-v2", render_subactions=False, rew_type="meta_world_rew",
+                 number_of_one_hot_tasks=1, one_hot_task_index=-1):
         # set enviroment: todo: do it adjustable
         rew_types = ["meta_world_rew","rew1"]
         if rew_type not in rew_types:
@@ -81,19 +82,42 @@ class SubGoalEnv(gym.Env):
         obj_high = np.full(obs_obj_max_len, +np.inf)
         goal_low = np.zeros(3)
         goal_high = np.zeros(3)
-        self.observation_space = Box(
-            np.hstack((hand_space.low, gripper_low, obj_low,
-                       hand_space.low, gripper_low, obj_low, goal_low)),
-            np.hstack((hand_space.high, gripper_high, obj_high,
-                       hand_space.high, gripper_high, obj_high, goal_high))
-            , dtype=np.float32
-        )
+        if number_of_one_hot_tasks ==1:
+            self.observation_space = Box(
+                np.hstack((hand_space.low, gripper_low, obj_low,
+                           hand_space.low, gripper_low, obj_low, goal_low)),
+                np.hstack((hand_space.high, gripper_high, obj_high,
+                           hand_space.high, gripper_high, obj_high, goal_high))
+                , dtype=np.float32
+            )
+        else:
+            one_hot = Box(
+                np.ones(10),
+                np.ones(10)*-1, dtype=np.float32
+            )
+            self.observation_space = Box(
+                np.hstack((hand_space.low, gripper_low, obj_low,
+                           hand_space.low, gripper_low, obj_low, goal_low,one_hot.low)),
+                np.hstack((hand_space.high, gripper_high, obj_high,
+                           hand_space.high, gripper_high, obj_high, goal_high,one_hot.high))
+                , dtype=np.float32
+            )
         # other
         self._max_episode_length = 20
         self.number_steps = 0
         self.render_subactions = render_subactions
         self.already_grasped = False
         self.episode_rew = 0
+        self.number_of_one_hot_tasks = number_of_one_hot_tasks
+        self.one_hot_task_index = one_hot_task_index
+
+
+    def _add_one_hot_task_to_obs(self,obs) ->[float]:
+        if self.number_of_one_hot_tasks <= 1:
+            return obs
+        one_hot = np.zeros(self.number_of_one_hot_tasks)
+        one_hot[self.one_hot_task_index] = 1
+        return np.concatenate([obs, one_hot])
 
     def _calculate_reward(self, re, info: Dict[str, bool], obs: [float], actiontype) -> (int, bool):
         reward = -2
@@ -167,10 +191,10 @@ class SubGoalEnv(gym.Env):
         self.number_steps = 0
         self.cur_task_index += 1
         self.already_grasped = False
-        return obs
+        return self._add_one_hot_task_to_obs(obs)
 
     def step(self, action):
-        obs = [0] * 40
+        # obs = [0] * 40
         # get kind of action: "hold"=0, "grap"=1
         actiontype = 0
         gripper_closed = True
@@ -183,16 +207,21 @@ class SubGoalEnv(gym.Env):
 
         # find trajectory to reach coordinates
         # use tcp_center because its more accurat then obs
-        sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos, gripper_closed=gripper_closed)
-        reward = 0
-        if len(sub_actions) == 0:
-            obs, reward, done, info = self.env.step([0, 0, 0, 0])
-            reward, done = self._calculate_reward(reward, info, obs, actiontype)
-            self.number_steps += 1
-            if self.number_steps >= self._max_episode_length:
-                info["TimeLimit.truncated"] = not done
-                done = True
-            return obs, reward, done, info
+        #
+        # sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos, gripper_closed=gripper_closed)
+        # reward = 0
+        # if len(sub_actions) == 0:
+        #     obs, reward, done, info = self.env.step([0, 0, 0, 0])
+        #     reward, done = self._calculate_reward(reward, info, obs, actiontype)
+        #     self.number_steps += 1
+        #     if self.number_steps >= self._max_episode_length:
+        #         info["TimeLimit.truncated"] = not done
+        #         done = True
+        #     return obs, reward, done, info
+
+
+        #create inital obs,
+        obs, reward, done, info = self.env.step([0, 0, 0, 0])
 
         if actiontype == 1:
             # open gripper if picking
@@ -229,4 +258,4 @@ class SubGoalEnv(gym.Env):
         if self.number_steps >= self._max_episode_length:
             info["TimeLimit.truncated"] = not done
             done = True
-        return obs, reward, done, info
+        return self._add_one_hot_task_to_obs(obs), reward, done, info
