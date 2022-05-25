@@ -3,3 +3,8 @@
 /models/cloud_models/*
 /logs/PPO_0/*
 /logs/SAC_0/*
+/metaworld/__pycache__/*
+metaworld/envs/__pycache__/*
+metaworld/envs/mujoco/__pycache__/*
+metaworld/envs/mujoco/sawyer_xyz/__pycache__/*
+metaworld/envs/mujoco/sawyer_xyz/v1/__pycache__/*
