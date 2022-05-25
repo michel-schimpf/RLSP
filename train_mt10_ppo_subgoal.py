@@ -15,9 +15,9 @@ def train():
     # variables:
     models_dir = f"models/PPO"
     logdir = "logs"
-    timestamps = 50#2048
-    number_envs_of_each_task = 1#6
-    batch_size = 50#4096
+    timestamps = 2048
+    number_envs_of_each_task = 6
+    batch_size = 8192
     rew_type = "rew1"
 
     # create env
