@@ -36,7 +36,7 @@ class SubGoalEnv(gym.Env):
         self.number_of_one_hot_tasks = number_of_one_hot_tasks
         self.one_hot_task_index = one_hot_task_index
         # different for each env
-        if self.env_name is "obstacle_env":
+        if self.env_name == "obstacle_env":
             # set enviroment dimensions
             # todo: check
             self.env_dimension = [(1.15, 1.45), (0.65, 1.1), (0.4, 0.5)]
