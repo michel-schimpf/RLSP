@@ -1,32 +1,37 @@
 from typing import Tuple
 
 
-def reach(current_pos, goal_pos, gripper_closed) -> [[float]]:
+def reach(current_pos, goal_pos, gripper_closed, env_dimension, obstacles=None,) -> [[float]]:
     step_size = 0.01  # Todo: whats right step size
     trajectory_planner = FindTrajectory(current_pos, goal_pos,
-                                        step_size=step_size, obstacles=None, safety_margin=0.0,
-                                        gripper_closed=gripper_closed)
+                                        step_size=step_size, obstacles=obstacles, safety_margin=0.01,
+                                        gripper_closed=gripper_closed,env_dimension=env_dimension)
     return trajectory_planner.a_star_search()
-
-
-def pick() -> [float]:
-    return [0, 0, 0, 1]
-
-
-def place() -> [float]:
-    return [0, 0, 0, -1]
+#
+# def pick() -> [float]:
+#     return [0, 0, 0, 1]
+# def place() -> [float]:
+#     return [0, 0, 0, -1]
 
 
 class Obstacles:
     def __init__(self, obs: dict, dt: float):
-
         self.obstacles = []
-        for i, obstacle in enumerate(obs['real_obstacle_info']):
-            pos = tuple(obstacle[:3])
-            size = tuple(obstacle[3:6])
-            vel = obs['velocitys'][i]
-            direction = tuple([1 * obs['obstacle_directions'][i], 0, 0])  # change with variable direction array
-            self.obstacles.append(Obstacle(pos, size, vel, direction, dt))
+        # for i, obstacle in enumerate(obs['real_obstacle_info']):
+        #     pos = tuple(obstacle[:3])
+        #     size = tuple(obstacle[3:6])
+        #     vel = obs['velocitys'][i]
+        #     direction = tuple([1 * obs['obstacle_directions'][i], 0, 0])  # change with variable direction array
+        #     self.obstacles.append(Obstacle(pos, size, vel, direction, dt))
+        for o in ["obstacle1", "obstacle2", "obstacle3"]:
+            self.obstacles.append(Obstacle(pos=obs[o][:3], size=obs[o][3:6], vel=obs[o][6], direction=[1,0,0], dt=dt))
+        print(self.obstacles[0])
+
+    def __str__(self):
+        obst_str = ""
+        for i,o in enumerate(self.obstacles):
+            obst_str += f"o{i}: {o}\n"
+        return obst_str
 
     def collides_at_time_step(self, pos: Tuple[float, float, float], time_step: int, safety_margin: float) -> bool:
         for i in self.obstacles:
@@ -51,8 +56,8 @@ class Obstacle:
     def collides_at_time_step(self, pos: Tuple[float, float, float], time_step: int, safety_margin: float) -> bool:
         f_pos = self.future_obstacle_position(time_step)
         # gripper dimension
-        g_x_width = 0.01
-        g_y_depth = 0.015
+        g_x_width = 0.05
+        g_y_depth = 0.05
         g_z_up = 0.1
         g_z_down = 0.0
         # xmax1 >= xmin2 and xmin1 <= xmax2
@@ -108,13 +113,15 @@ class Node:
 
 class FindTrajectory:
 
-    def __init__(self, start_pos, goal_position, step_size, obstacles: Obstacles, safety_margin, gripper_closed):
+    def __init__(self, start_pos, goal_position, step_size, obstacles: Obstacles,
+                 safety_margin, gripper_closed,env_dimension):
         self.start_pos = start_pos
         self.goal_pos = goal_position
         self.step_size = step_size
         self.obstacles = obstacles
         self.safety_margin = safety_margin
         self.gripper_closed = gripper_closed
+        self.env_dimension = env_dimension
 
     def is_nearest_node_to_goal(self, node: Node) -> bool:
         for i in range(3):
@@ -123,7 +130,12 @@ class FindTrajectory:
         return True
 
     def node_is_reachable(self, node: Node) -> bool:
-        # Todo: Implement
+        # print("node:",node.pos)
+        for i in range(3):
+            if node.pos[i] < self.env_dimension[i][0] or node.pos[i] > self.env_dimension[i][1]:
+                # print("False")
+                return False
+
         return True
 
     def get_possible_adjacent_nodes(self, node: Node, time_step) -> [Node]:
@@ -160,8 +172,8 @@ class FindTrajectory:
             else:
                 action.append(-1)
             #Todo: what is that rounding?
-            # actions.append([round(i, 2) for i in action])
-            actions.append(action)
+            actions.append([round(i, 5) for i in action])
+            # actions.append(action)
         return actions
 
     def a_star_search(self):
@@ -188,7 +200,7 @@ class FindTrajectory:
             closed_dic[min_key] = current_node
 
             # Found the goal or maximum depth reached
-            if self.is_nearest_node_to_goal(current_node):
+            if self.is_nearest_node_to_goal(current_node) or current_node.depth > 15:
                 path = []
                 current = current_node
                 while current is not None:

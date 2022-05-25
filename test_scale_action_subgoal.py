@@ -1,6 +1,6 @@
 import numpy as np
 
-from SubGoalEnv2_16_05_22 import SubGoalEnv, scale_env_pos_to_action, pretty_obs
+from SubGoalEnv import SubGoalEnv, scale_env_pos_to_action, pretty_obs
 
 env = SubGoalEnv("pick-place-v2", render_subactions=True)
 obs = env.reset()

@@ -65,6 +65,8 @@ class RLPPAMonitor(VecEnvWrapper):
         else:
             self.results_writer = None
         self.info_keywords = info_keywords
+        #added:
+        self.successes = [0] * venv.num_envs
 
     def reset(self) -> VecEnvObs:
         obs = self.venv.reset()
@@ -78,8 +80,12 @@ class RLPPAMonitor(VecEnvWrapper):
         self.episode_returns += rewards
         self.episode_lengths += 1
         new_infos = list(infos[:])
-        # print(dones)
+
         for i in range(len(dones)):
+            # to give success metric
+            if infos[i]["success"]:
+                self.successes[i] = 1
+            # add when done
             if dones[i]:
                 info = infos[i].copy()
                 episode_return = self.episode_returns[i]
@@ -88,11 +94,11 @@ class RLPPAMonitor(VecEnvWrapper):
                     # print("obs",pretty_obs(obs[i]))
                     task_id = onehot_to_task_id(pretty_obs(obs[i])["one_hot_task"])
                     # print("task_id", task_id, " one_hot: ",pretty_obs(obs[i])["one_hot_task"])
-                    episode_info = {"r":episode_return, "l": episode_length,
-                                    "t": round(time.time() - self.t_start, 6), "taskid": task_id}
+                    episode_info = {"r": episode_return, "l": episode_length, "t": round(time.time() - self.t_start, 6),
+                                    "taskid": task_id, "success": self.successes[i]}
                 else :
-                    episode_info = {"r": episode_return, "l": episode_length,
-                                "t": round(time.time() - self.t_start, 6)}
+                    episode_info = {"r": episode_return, "l": episode_length, "t": round(time.time() - self.t_start, 6),
+                                    "success": self.successes[i]}
                 # print(info)
                 for key in self.info_keywords:
                     episode_info[key] = info[key]
@@ -103,7 +109,8 @@ class RLPPAMonitor(VecEnvWrapper):
                 if self.results_writer:
                     self.results_writer.write_row(episode_info)
                 new_infos[i] = info
-                # print(new_infos[i])
+                # if success is logged in enviroment, then set 0 again
+                self.successes[i] = 0
         return obs, rewards, dones, new_infos
 
     def close(self) -> None:

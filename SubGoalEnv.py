@@ -6,127 +6,133 @@ import numpy as np
 import gym
 import metaworld
 from gym.spaces import Box
-from GripperControl import reach, pick, place
+from GripperControl import reach, Obstacles
 from metaworld.envs import reward_utils
+from ObstacleEnviroment.fetch.pick_dyn_lifted_obstacles import FetchPickDynLiftedObstaclesEnv, pretty_obs
 
-
-# Todo: add types
-ENV_DIMENSION = [(-0.37, 0.31), (0.40, 0.91), (0.0, 0.31)]
+# ENV_DIMENSION = [(-0.37, 0.31), (0.40, 0.91), (0.0, 0.31)]
 # for pick_place: minimum = [(-0.15, 0.15), (0.58, 0.91), (0.0, 0.31)]
 # with peg_insert: [(-0.36, 0.26), (0.39, 0.91), (0.0, 0.31)]
 # with door close [(-0.37, 0.31), (0.40, 0.91), (0.0, 0.31)]
 
-def scale_action_to_env_pos(action):
-    action = np.clip(action, -1, 1)
-    action_dimension = [(-1, 1), (-1, 1), (-1, 1)]
-    # add a bit of marging
-    env_pos = []
-    for i in range(3):
-        action_range = (action_dimension[i][1] - action_dimension[i][0])
-        env_range = (ENV_DIMENSION[i][1] - ENV_DIMENSION[i][0])
-        env_pos.append((((action[i] - action_dimension[i][0]) * env_range) / action_range) + ENV_DIMENSION[i][0])
-    return env_pos
-
-
-def scale_env_pos_to_action(env_pos):
-    action_dimension = [(-1, 1), (-1, 1), (-1, 1)]
-     # add a bit of marging
-    action = []
-    for i in range(3):
-        action_range = (action_dimension[i][1] - action_dimension[i][0])
-        env_range = (ENV_DIMENSION[i][1] - ENV_DIMENSION[i][0])
-        action.append((((env_pos[i] - ENV_DIMENSION[i][0]) * action_range) / env_range) + action_dimension[i][0])
-    action = list(np.clip(action, -1, 1))
-    return action
-
-
-def pretty_obs(obs):
-    return {'gripper_pos': obs[0:4], 'first_obj': obs[4:11], 'second_obj': obs[11:18],
-            'goal': obs[36:39], 'last_measurements': obs[18:36], "one_hot_task": obs [39:]}
-
 
 class SubGoalEnv(gym.Env):
-
-    def __init__(self, env="reach-v2", render_subactions=False, rew_type="meta_world_rew",
+    # todo: order methods
+    def __init__(self, env="reach-v2", render_subactions=False, rew_type="",
                  number_of_one_hot_tasks=1, one_hot_task_index=-1):
-        # set enviroment: todo: do it adjustable
-        rew_types = ["meta_world_rew","rew1"]
+        rew_types = ["","meta_world_rew","rew1"]
         if rew_type not in rew_types:
             raise Exception('rew_type needs to be one of: ', rew_types)
         self.env_rew = rew_type
         self.env_name = env
-        mt1 = metaworld.MT1(env)  # Construct the benchmark, sampling tasks
-        env = mt1.train_classes[env]()  # Create an environment with task `pick_place`
-        self.tasks = mt1.train_tasks
-        self.cur_task_index = 0
-        env.set_task(self.tasks[self.cur_task_index])  # Set task
-        self.env = env
-
-        # define action space:
         self.action_space = Box(
             np.array([-1, -1, -1, -1]),
             np.array([1, 1, 1, 1]), dtype=np.float32
         )
-
-        # define oberservation space (copied from sawyer_xyz_env
-        hand_space = Box(
-            np.array([-0.525, .348, -.0525]),
-            np.array([+0.525, 1.025, .7]), dtype=np.float32
-        )
-        gripper_low = -1.
-        gripper_high = +1.
-        obs_obj_max_len = 14
-        obj_low = np.full(obs_obj_max_len, -np.inf)
-        obj_high = np.full(obs_obj_max_len, +np.inf)
-        goal_low = np.zeros(3)
-        goal_high = np.zeros(3)
-        if number_of_one_hot_tasks ==1:
-            self.observation_space = Box(
-                np.hstack((hand_space.low, gripper_low, obj_low,
-                           hand_space.low, gripper_low, obj_low, goal_low)),
-                np.hstack((hand_space.high, gripper_high, obj_high,
-                           hand_space.high, gripper_high, obj_high, goal_high))
-                , dtype=np.float32
-            )
-        else:
-            one_hot = Box(
-                np.ones(10),
-                np.ones(10)*-1, dtype=np.float32
-            )
-            self.observation_space = Box(
-                np.hstack((hand_space.low, gripper_low, obj_low,
-                           hand_space.low, gripper_low, obj_low, goal_low,one_hot.low)),
-                np.hstack((hand_space.high, gripper_high, obj_high,
-                           hand_space.high, gripper_high, obj_high, goal_high,one_hot.high))
-                , dtype=np.float32
-            )
-        # other
         self._max_episode_length = 20
         self.number_steps = 0
         self.render_subactions = render_subactions
         self.already_grasped = False
-        self.episode_rew = 0
         self.number_of_one_hot_tasks = number_of_one_hot_tasks
         self.one_hot_task_index = one_hot_task_index
+        # different for each env
+        if self.env_name is "obstacle_env":
+            # set enviroment dimensions
+            # todo: check
+            self.env_dimension = [(1.15, 1.45), (0.65, 1.1), (0.4, 0.5)]
+            # set enviorment
+            self.env = FetchPickDynLiftedObstaclesEnv()
+            # set observation space
+            obs = self.env.reset()['observation']
+            self.observation_space = Box(-np.inf, np.inf, shape=obs.shape, dtype="float32")
+        else:
+            # set enviroment dimensions
+            self.env_dimension = [(-0.37, 0.31), (0.40, 0.91), (0.0, 0.31)]
+            # set enviroment
+            mt1 = metaworld.MT1(env)  # Construct the benchmark, sampling tasks
+            env = mt1.train_classes[env]()  # Create an environment with task `pick_place`
+            self.tasks = mt1.train_tasks
+            self.cur_task_index = 0
+            env.set_task(self.tasks[self.cur_task_index])  # Set task
+            self.env = env
 
-    def _add_one_hot_task_to_obs(self, obs) ->[float]:
+            # define oberservation space (copied from sawyer_xyz_env
+            hand_space = Box(
+                np.array([-0.525, .348, -.0525]),
+                np.array([+0.525, 1.025, .7]), dtype=np.float32
+            )
+            gripper_low = -1.
+            gripper_high = +1.
+            obs_obj_max_len = 14
+            obj_low = np.full(obs_obj_max_len, -np.inf)
+            obj_high = np.full(obs_obj_max_len, +np.inf)
+            goal_low = np.zeros(3)
+            goal_high = np.zeros(3)
+            # different for multi task and non multi task env
+            if number_of_one_hot_tasks ==1:
+                self.observation_space = Box(
+                    np.hstack((hand_space.low, gripper_low, obj_low,
+                               hand_space.low, gripper_low, obj_low, goal_low)),
+                    np.hstack((hand_space.high, gripper_high, obj_high,
+                               hand_space.high, gripper_high, obj_high, goal_high))
+                    , dtype=np.float32)
+            else:
+                one_hot = Box(np.ones(10), np.ones(10)*-1, dtype=np.float32)
+                self.observation_space = Box(
+                    np.hstack((hand_space.low, gripper_low, obj_low,
+                               hand_space.low, gripper_low, obj_low, goal_low,one_hot.low)),
+                    np.hstack((hand_space.high, gripper_high, obj_high,
+                               hand_space.high, gripper_high, obj_high, goal_high,one_hot.high))
+                    , dtype=np.float32)
+
+    def pretty_obs(self, obs):
+        if self.env_name == "obstacle_env":
+            return pretty_obs(obs)
+        return {'gripper_pos': obs[0:4], 'first_obj': obs[4:11], 'second_obj': obs[11:18],
+                'goal': obs[36:39], 'last_measurements': obs[18:36], "one_hot_task": obs[39:]}
+
+    def scale_action_to_env_pos(self,action):
+        action = np.clip(action, -1, 1)
+        action_dimension = [(-1, 1), (-1, 1), (-1, 1)]
+        env_pos = []
+        for i in range(3):
+            action_range = (action_dimension[i][1] - action_dimension[i][0])
+            env_range = (self.env_dimension[i][1] - self.env_dimension[i][0])
+            env_pos.append((((action[i] - action_dimension[i][0]) * env_range) / action_range) + self.env_dimension[i][0])
+        return env_pos
+
+    def scale_env_pos_to_action(self,env_pos):
+        action_dimension = [(-1, 1), (-1, 1), (-1, 1)]
+        action = []
+        for i in range(3):
+            action_range = (action_dimension[i][1] - action_dimension[i][0])
+            env_range = (self.env_dimension[i][1] - self.env_dimension[i][0])
+            action.append((((env_pos[i] - self.env_dimension[i][0]) * action_range) / env_range) + action_dimension[i][0])
+        action = list(np.clip(action, -1, 1))
+        return action
+
+    def _change_obs(self, obs) ->[float]:
+        # if obstacle env change obs
+        if self.env_name == "obstacle_env":
+            return obs["observation"]
+        # if normal env just return obs
         if self.number_of_one_hot_tasks <= 1:
             return obs
+        # if multi env add one-hot
         one_hot = np.zeros(self.number_of_one_hot_tasks)
         one_hot[self.one_hot_task_index] = 1
         return np.concatenate([obs, one_hot])
 
     def _calculate_reward(self, re, info: Dict[str, bool], obs: [float], actiontype) -> (int, bool):
+        # todo: refactor
         reward = -2
         done = False
-        if self.env_rew == "meta_world_rew":
+        if self.env_rew in ["meta_world_rew","normal",""]:
             return re, done
-
         if self.env_rew == "rew1":
             if info['success']:
                 return 0, True
             return (-1 + (re/10)), False
-
         if self.env_name == "reach-v2":
             reward = -1
             if 'success' in info and info['success']:
@@ -139,11 +145,8 @@ class SubGoalEnv(gym.Env):
             gripper_pos = self.env.tcp_center
             gripper_to_obj = np.linalg.norm(obj_pos - gripper_pos)
             in_place_margin = (np.linalg.norm(self.env.hand_init_pos - obj_pos))
-            gripper_to_obj_reward = reward_utils.tolerance(gripper_to_obj,
-                                                           bounds=(0, _TARGET_RADIUS),
-                                                           margin=in_place_margin,
-                                                           sigmoid='long_tail', )
-
+            gripper_to_obj_reward = reward_utils.tolerance(gripper_to_obj,bounds=(0, _TARGET_RADIUS),
+                                                           margin=in_place_margin,sigmoid='long_tail', )
             # give reward for grasping the object
             grasp_reward = 0
             if 'grasp_reward' in info:
@@ -181,16 +184,15 @@ class SubGoalEnv(gym.Env):
         self.env.render()
 
     def reset(self):
-        if self.cur_task_index >= len(self.tasks):
-            self.cur_task_index = 0
-        self.env.set_task(self.tasks[self.cur_task_index])
-        obs = self.env.reset()
+        if self.env_name != "obstacle_env":
+            if self.cur_task_index >= len(self.tasks):
+                self.cur_task_index = 0
+            self.env.set_task(self.tasks[self.cur_task_index])
+            self.cur_task_index += 1
+            self.already_grasped = False
         self.number_steps = 0
-        self.cur_task_index += 1
-        self.already_grasped = False
-        # print("one_hot_task_index: ",self.one_hot_task_index)
-        new_obs = self._add_one_hot_task_to_obs(obs)
-        return self._add_one_hot_task_to_obs(obs)
+        obs = self.env.reset()
+        return self._change_obs(obs)
 
     def step(self, action):
         # obs = [0] * 40
@@ -202,22 +204,7 @@ class SubGoalEnv(gym.Env):
             gripper_closed = False
 
         # transform action into cordinates
-        sub_goal_pos = scale_action_to_env_pos(action)
-
-        # find trajectory to reach coordinates
-        # use tcp_center because its more accurat then obs
-        #
-        # sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos, gripper_closed=gripper_closed)
-        # reward = 0
-        # if len(sub_actions) == 0:
-        #     obs, reward, done, info = self.env.step([0, 0, 0, 0])
-        #     reward, done = self._calculate_reward(reward, info, obs, actiontype)
-        #     self.number_steps += 1
-        #     if self.number_steps >= self._max_episode_length:
-        #         info["TimeLimit.truncated"] = not done
-        #         done = True
-        #     return obs, reward, done, info
-
+        sub_goal_pos = self.scale_action_to_env_pos(action)
 
         #create inital obs,
         obs, reward, done, info = self.env.step([0, 0, 0, 0])
@@ -230,15 +217,37 @@ class SubGoalEnv(gym.Env):
                     self.env.render()
                     time.sleep(0.05)
 
-        # if it did not reach completly do again
-        # TODO: make smarter
+        if self.env_name == "obstacle_env":
+            gripper_pos = obs["observation"][:3]
+            obstacles = Obstacles(pretty_obs(obs["observation"]), self.env.dt)
+            print(obstacles)
+        else:
+            obstacles = None
+            gripper_pos = self.env.tcp_center
+
         max_it = 3
-        while np.linalg.norm(self.env.tcp_center - sub_goal_pos) > 0.0005:
-            sub_actions = reach(current_pos=self.env.tcp_center, goal_pos=sub_goal_pos,
-                                gripper_closed=gripper_closed)
+        if self.env_name == "obstacle_env":
+            max_it = 1
+
+        # if it did not reach completly do again
+        while np.linalg.norm(gripper_pos - sub_goal_pos) > 0.0005:
+            if self.env_name == "obstacle_env":
+                gripper_pos = obs["observation"][:3]
+            else:
+                gripper_pos = self.env.tcp_center
+
+            sub_actions = reach(current_pos=gripper_pos, goal_pos=sub_goal_pos,
+                                gripper_closed=gripper_closed, obstacles=obstacles, env_dimension=self.env_dimension)
+            print(sub_actions)
+            if sub_actions is None:
+                sub_actions = [[0,0,0,0]]
             for a in sub_actions:
+                # print("bevor",pretty_obs(obs['observation']))
                 obs, reward, done, info = self.env.step(a)
+                # print("--sa:", a)
+                # print("after", pretty_obs(obs['observation']))
                 if self.render_subactions:
+
                     self.env.render()
                     time.sleep(0.05)
             max_it -= 1
@@ -257,4 +266,5 @@ class SubGoalEnv(gym.Env):
         if self.number_steps >= self._max_episode_length:
             info["TimeLimit.truncated"] = not done
             done = True
-        return self._add_one_hot_task_to_obs(obs), reward, done, info
+        # TODO: get real reward
+        return self._change_obs(obs), reward, done, info

@@ -1,5 +1,5 @@
-from SubGoalEnv import SubGoalEnv, scale_env_pos_to_action, pretty_obs
-env = SubGoalEnv("peg-insert-side-v2", render_subactions=True, rew_type="rew1")
+from SubGoalEnv import SubGoalEnv
+env = SubGoalEnv("pick-place-v2", render_subactions=True, rew_type="rew1")
 obs = env.reset()
 total_reach = 0
 for i in range(50):
@@ -25,16 +25,17 @@ for i in range(50):
     # obs, r, d, i1 = env.step(action_to_reach_goal)
     # print("reward:", r)
     # print("info", i1)
-    # print("----------------------\nTest pick random actions:\n----------------------")
+    print("----------------------\nTest pick random actions:\n----------------------")
     # print(obs)
-    goal = pretty_obs(obs)['first_obj']
-    print("obs:",pretty_obs(obs))
-    action_to_reach_goal = scale_env_pos_to_action(goal)
+    goal = env.pretty_obs(obs)['first_obj']
+    print("obs:", env.pretty_obs(obs))
+    action_to_reach_goal = env.scale_env_pos_to_action(goal)
     action_to_reach_goal.append(1)
     # action_to_reach_goal[0] -= 0.07
-    # print("action:", action_to_reach_goal)
+    print("action:", action_to_reach_goal)
+    print("pos to action",env.scale_action_to_env_pos(action_to_reach_goal))
     obs, r, d, i1 = env.step(action_to_reach_goal)
-    print(i1)
+    print("info", i1)
     print("reward:", r)
     total_reward += r
     # print("info", i1)
@@ -90,12 +91,12 @@ for i in range(50):
     #     continue
     # else:
     #     print("not reached with:", action_to_reach_goal)
-    # print("----------------------\nTest drop random actions:\n----------------------")
+    print("----------------------\nTest drop random actions:\n----------------------")
     # print(pretty_obs(obs))
-    goal = pretty_obs(obs)['goal']
+    goal = env.pretty_obs(obs)['goal']
     # print("goal:", goal)
     # goal[0] = 0.1
-    action_to_reach_goal = scale_env_pos_to_action(goal)
+    action_to_reach_goal = env.scale_env_pos_to_action(goal)
     action_to_reach_goal.append(-0.1)
     # print("action:", action_to_reach_goal)
     obs, r, d, i2 = env.step(action_to_reach_goal)
