@@ -18,7 +18,7 @@ def train():
     timestamps = 2048
     number_envs_of_each_task = 6
     batch_size = 4096
-    rew_type = "meta_world_rew"
+    rew_type = "rew1"
 
     # create env
     mt10 = metaworld.MT10()

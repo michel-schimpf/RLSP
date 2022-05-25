@@ -220,7 +220,7 @@ class SubGoalEnv(gym.Env):
         if self.env_name == "obstacle_env":
             gripper_pos = obs["observation"][:3]
             obstacles = Obstacles(pretty_obs(obs["observation"]), self.env.dt)
-            print(obstacles)
+            # print(obstacles)
         else:
             obstacles = None
             gripper_pos = self.env.tcp_center
@@ -238,7 +238,6 @@ class SubGoalEnv(gym.Env):
 
             sub_actions = reach(current_pos=gripper_pos, goal_pos=sub_goal_pos,
                                 gripper_closed=gripper_closed, obstacles=obstacles, env_dimension=self.env_dimension)
-            print(sub_actions)
             if sub_actions is None:
                 sub_actions = [[0,0,0,0]]
             for a in sub_actions:

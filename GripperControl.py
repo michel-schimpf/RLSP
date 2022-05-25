@@ -25,7 +25,7 @@ class Obstacles:
         #     self.obstacles.append(Obstacle(pos, size, vel, direction, dt))
         for o in ["obstacle1", "obstacle2", "obstacle3"]:
             self.obstacles.append(Obstacle(pos=obs[o][:3], size=obs[o][3:6], vel=obs[o][6], direction=[1,0,0], dt=dt))
-        print(self.obstacles[0])
+        # print(self.obstacles[0])
 
     def __str__(self):
         obst_str = ""
