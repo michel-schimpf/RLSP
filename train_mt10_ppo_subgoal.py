@@ -15,16 +15,23 @@ def train():
     # variables:
     models_dir = f"models/PPO"
     logdir = "logs"
-    timestamps = 2048
+    timestamps = 8192
     number_envs_of_each_task = 6
-    batch_size = 8192
+    number_envs_per_task = [3,10,15,3,3,3,3,15,3,3]
+    batch_size = 16384
     rew_type = "rew1"
 
     # create env
     mt10 = metaworld.MT10()
     env_array = []
-    for i in range(number_envs_of_each_task):
-        env_array += [make_env(name, rew_type, 10, i) for i, (name, _) in enumerate(mt10.train_classes.items())]
+
+    for i, (name, _) in enumerate(mt10.train_classes.items()):
+        for _ in range(number_envs_per_task[i]):
+            env_array += make_env(name, rew_type, 10, i)
+
+    # for i in range(number_envs_of_each_task):
+    #     env_array += [make_env(name, rew_type, 10, i) for i, (name, _) in enumerate(mt10.train_classes.items())]
+
     env_vec = SubprocVecEnv(env_array)
     env_vec = RLPPAMonitor(env_vec, "logs/PPO", multi_env=True)
 
