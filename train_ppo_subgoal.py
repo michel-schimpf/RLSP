@@ -42,7 +42,7 @@ def train():
         iters += 1
         model = model.learn(total_timesteps=TIMESTEPS, reset_num_timesteps=False,
                             tb_log_name="PPO_0", )
-        model.save(f"{models_dir}/{TIMESTEPS * iters * 64}")
+        model.save(f"{models_dir}/{TIMESTEPS * iters * 63}")
 
 
 if __name__ == '__main__':

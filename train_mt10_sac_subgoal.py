@@ -2,7 +2,7 @@
 from typing import Tuple
 
 import numpy as np
-from stable_baselines3 import PPO
+from stable_baselines3 import SAC
 
 import metaworld
 from SubGoalEnv import SubGoalEnv
@@ -17,9 +17,9 @@ def train():
     logdir = "logs"
     timestamps = 500#8192
     number_envs = 61
-    number_envs_per_task = [3, 10, 15, 3, 3, 3, 3, 15, 3, 3]
-    number_envs_per_task = [1]*10
-    batch_size = 16384
+    number_envs_per_task = [4, 11, 15, 3, 1, 3, 3, 15, 3, 3]
+    # xnumber_envs_per_task = [1]*10
+    batch_size = 4096
     rew_type = "rew1"
 
     # create env
@@ -37,7 +37,7 @@ def train():
     env_vec = RLPPAMonitor(env_vec, "logs/PPO_0", multi_env=True)
 
     # create or load model
-    model = PPO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=timestamps,
+    model = SAC('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir,
                 batch_size=batch_size, )
     # model = ALGO.load("models/PPO3/15360000.zip", env=env_vec,tensorboard_log=logdir)
 
