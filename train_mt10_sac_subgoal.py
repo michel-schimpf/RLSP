@@ -15,10 +15,11 @@ def train():
     # variables:
     models_dir = f"models/SAC"
     logdir = "logs"
-    timestamps = 500#8192
+    timestamps = 16384
+    # timestamps = 2000
     number_envs = 61
     number_envs_per_task = [4, 11, 15, 3, 1, 3, 3, 15, 3, 3]
-    # xnumber_envs_per_task = [1]*10
+    #number_envs_per_task = [1]*10
     batch_size = 4096
     rew_type = "rew1"
 
@@ -47,7 +48,7 @@ def train():
         print(i)
         i += 1
         model = model.learn(total_timesteps=timestamps, reset_num_timesteps=False,
-                            tb_log_name="SAC", )
+                            tb_log_name="SAC", log_interval=timestamps/10,eval_freq=timestamps)
         model.save(f"{models_dir}/{timestamps * i * number_envs}")
 
 
