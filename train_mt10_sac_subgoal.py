@@ -13,7 +13,7 @@ from RL_PPA_monitor import RLPPAMonitor
 
 def train():
     # variables:
-    models_dir = f"models/PPO"
+    models_dir = f"models/SAC"
     logdir = "logs"
     timestamps = 500#8192
     number_envs = 61
@@ -34,7 +34,7 @@ def train():
     #     env_array += [make_env(name, rew_type, 10, i) for i, (name, _) in enumerate(mt10.train_classes.items())]
 
     env_vec = SubprocVecEnv(env_array)
-    env_vec = RLPPAMonitor(env_vec, "logs/PPO_0", multi_env=True)
+    env_vec = RLPPAMonitor(env_vec, "logs/SAC_0", multi_env=True)
 
     # create or load model
     model = SAC('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir,
@@ -47,7 +47,7 @@ def train():
         print(i)
         i += 1
         model = model.learn(total_timesteps=timestamps, reset_num_timesteps=False,
-                            tb_log_name="PPO", )
+                            tb_log_name="SAC", )
         model.save(f"{models_dir}/{timestamps * i * number_envs}")
 
 
