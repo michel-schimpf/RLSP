@@ -27,7 +27,9 @@ class RLPPAMonitor(VecEnvWrapper):
         filename: Optional[str] = None,
         info_keywords: Tuple[str, ...] = (),
         multi_env = False,
+        num_tasks = 1,
     ):
+        self.num_tasks = num_tasks
         self.multi_env = multi_env
         # Avoid circular import
         from stable_baselines3.common.monitor import Monitor, ResultsWriter
@@ -92,7 +94,7 @@ class RLPPAMonitor(VecEnvWrapper):
                 episode_length = self.episode_lengths[i]
                 if self.multi_env:
                     # print("obs",pretty_obs(obs[i]))
-                    task_id = onehot_to_task_id(obs[i][-10:])
+                    task_id = onehot_to_task_id(obs[i][-self.num_tasks:])
                     # print("task_id", task_id, " one_hot: ",pretty_obs(obs[i])["one_hot_task"])
                     episode_info = {"r": episode_return, "l": episode_length, "t": round(time.time() - self.t_start, 6),
                                     "taskid": task_id, "success": self.successes[i]}
