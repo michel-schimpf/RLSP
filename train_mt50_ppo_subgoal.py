@@ -30,7 +30,7 @@ def train():
             env_array.append(make_env(name, rew_type, 50, i))
 
     env_vec = SubprocVecEnv(env_array)
-    env_vec = RLPPAMonitor(env_vec, "logs/PPO_0", multi_env=True, num_task=50)
+    env_vec = RLPPAMonitor(env_vec, "logs/PPO_0", multi_env=True, num_tasks=50)
 
     # create or load model
     model = PPO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=timestamps,
