@@ -77,7 +77,7 @@ class SubGoalEnv(gym.Env):
                                hand_space.high, gripper_high, obj_high, goal_high))
                     , dtype=np.float32)
             else:
-                one_hot = Box(np.ones(10), np.ones(10)*-1, dtype=np.float32)
+                one_hot = Box(np.ones(number_of_one_hot_tasks), np.ones(number_of_one_hot_tasks)*-1, dtype=np.float32)
                 self.observation_space = Box(
                     np.hstack((hand_space.low, gripper_low, obj_low,
                                hand_space.low, gripper_low, obj_low, goal_low,one_hot.low)),
