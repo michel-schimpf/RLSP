@@ -34,7 +34,7 @@ def train():
     #     env_array += [make_env(name, rew_type, 10, i) for i, (name, _) in enumerate(mt10.train_classes.items())]
 
     env_vec = SubprocVecEnv(env_array)
-    env_vec = RLPPAMonitor(env_vec, "logs/PPO_0", multi_env=True)
+    env_vec = RLPPAMonitor(env_vec, "logs/PPO_0", multi_env=True, num_tasks=10)
 
     # create or load model
     model = PPO('MlpPolicy', env_vec, verbose=1, tensorboard_log=logdir, n_steps=timestamps,
@@ -51,7 +51,7 @@ def train():
         model.save(f"{models_dir}/{timestamps * i * number_envs}")
 
 
-def make_env(name,rew_type,number_of_one_hot_tasks,one_hot_task_index):
+def make_env(name,rew_type,number_of_one_hot_tasks, one_hot_task_index):
 
     def _init():
         return SubGoalEnv(env=name, rew_type=rew_type, number_of_one_hot_tasks=number_of_one_hot_tasks,
