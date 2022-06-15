@@ -15,11 +15,18 @@ def train():
     # variables:
     models_dir = f"models/PPO"
     logdir = "logs"
-    timestamps = 16384
-    number_envs = 61
-    # number_envs_per_task = [3, 10, 15, 3, 3, 3, 3, 15, 3, 3]
-    # TODO try different number envs
-    number_envs_per_task = [2]*50
+    timestamps = 8192
+    number_envs = 0
+    # number_envs_per_task = [3, 10, 15, 3, 3, 3, 3, 15, 3, 3] (old)
+    # indeces_with_only_one_env = [6,49,44,37,36,35,26,25,24,23,22,21,20,18,11]
+    indeces_with_two_envs = [9,5,47,46,45,43,42,41,40,3,39,34,33,32,30,2,29,28,27,1,17,13,12,10,0]
+    number_envs_per_task = [1]*50
+    for i in range(50):
+        if i in indeces_with_two_envs:
+            number_envs_per_task[i] = 2
+            number_envs +=2
+        number_envs += 1
+
     batch_size = 65536
     rew_type = "rew1"
     # create env
