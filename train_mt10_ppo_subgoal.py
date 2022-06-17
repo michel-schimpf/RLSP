@@ -16,8 +16,8 @@ def train():
     models_dir = f"models/PPO"
     logdir = "logs"
     timestamps = 8192
-    number_envs = 86
-    number_envs_per_task = [5, 10, 30, 3, 3, 2, 3, 25, 3, 2]
+    number_envs_per_task = [5, 15, 30, 3, 2, 4, 3, 20, 3, 2]
+    number_envs = sum(number_envs_per_task)
     # number_envs_per_task = [1]*10
     batch_size = 16384
     rew_type = "rew1"
